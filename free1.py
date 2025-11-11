@@ -891,6 +891,7 @@ class MainWindow(QMainWindow):
             elif users_remaining != 0 and prize_text >= 1 and self.button1.text().strip() == "6":
                 self.users_remaining_button.setText(f"{dd:,.0f}")
 
+
         except Exception as e:
             print("Reducing() error:", e)
 
