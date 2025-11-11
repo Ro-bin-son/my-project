@@ -878,18 +878,20 @@ class MainWindow(QMainWindow):
             prize_text = float(self.prize_button.text().replace(",", "").replace("+", "").strip() or 0)
 
             # ✅ Condition logic
-            if (users_remaining == 0 and prize_text >= 1) and (self.button1.text().strip() != "6"):
+            if users_remaining == 0 and prize_text >= 1 :
                 self.users_remaining_button.setText(f"{dd:,.0f}")
 
-            if users_remaining == 0 and prize_text >= 1 and (self.button1.text().strip() == "6"):
+            if users_remaining == 0 and prize_text >= 1:
                 eee = 000
                 self.users_remaining_button.setText(f"{eee:,.0f}")
 
-            elif users_remaining != 0 and prize_text >= 1 and self.button1.text().strip() != "6":
+            elif users_remaining != 0 and prize_text >= 1:
                 self.users_remaining_button.setText(f"{dd:,.0f}")
 
-            elif users_remaining != 0 and prize_text >= 1 and self.button1.text().strip() == "6":
+            elif users_remaining != 0 and prize_text >= 1:
                 self.users_remaining_button.setText(f"{dd:,.0f}")
+
+
 
 
         except Exception as e:
