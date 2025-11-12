@@ -87,6 +87,7 @@ class MainWindow(QMainWindow):
         self.attempts_used = 0
         self.remaining_attempts = 0
         self.number_of_rounds = 0
+        self.total_amount = 0
         self.automation_timer = QTimer(self)
         self.automation_timer.timeout.connect(self.automatic_click)
 
@@ -730,9 +731,13 @@ class MainWindow(QMainWindow):
         self.maximum_attempts = robot_number
         self.remaining_attempts = robot_number
         self.attempts_used = 0
+        amount = random.choice([10, 20, 40, 50, 100, 200, 400, 500, 1000])
+        players = random.choice([500, 800, 1000, 2000, 3000])
+        tot_amount = amount * players
 
         QTimer.singleShot(2500, lambda: (
-            self.users_update(),
+            self.total_users_button.setText(str(f"{players:,.0f}")),
+            self.total_amount_button.setText(str(f"{tot_amount:,.0f}")),
 
             self.update_automated_attempts_display(),
             self.instruction_label.setStyleSheet("font-size: 24px;"
@@ -790,6 +795,7 @@ class MainWindow(QMainWindow):
             self.attempts_used += 1
             self.remaining_attempts -= 1
             self.update_automated_attempts_display()
+            self.natural_liquidation()
             self.prize_determinant()
             self.prize_layout_display()
             self.update_user_card()
@@ -799,7 +805,7 @@ class MainWindow(QMainWindow):
             self.automation_timer.stop()
             self.instruction_label.setText("Automation Complete")
             self.instruction_label.setStyleSheet("color: white; font-size: 32px;")
-            QTimer.singleShot(0, self.reset)
+            QTimer.singleShot(3000, self.reset)
 
     def update_user_card(self):
         number1 = self.button1.text().strip()
@@ -821,14 +827,50 @@ class MainWindow(QMainWindow):
             self.all_matched_button.setText(str(self.all_matched))
             self.pause2()
 
+    def natural_liquidation(self):
+        dd = float(self.total_amount_button.text().replace(",", "").strip() or 0)
+        deduct = float(self.amount_cashed_out_button.text().replace(",", "").strip() or 0)
+        init = float(self.developers_wallet_button.text().replace(",", "").strip() or 0)
+        addition = dd + init
+        add = init + (dd - deduct)
+        try:
+            prize_value = float(self.prize_button.text().strip() or 0)
+            all_cards = int(self.all_matched_button.text().strip() or 0)
+            if (prize_value <= -50 and all_cards <= 3) or (prize_value <= -200 and all_cards <= 6):
+                self.trigger_liquidation()
+                self.developers_wallet_button.setText(
+                    f"{addition:,.2f}") if deduct == 0 else self.developers_wallet_button.setText(f"{add:,.2f}")
+
+        except ValueError as e:
+            print(e)
+
+    def users(self):
+        try:
+            total_users = int(self.total_users_button.text().replace(",", "").strip() or 0)
+            users_remaining = int(self.users_remaining_button.text().replace(",", "").strip() or 0)
+            users_cashed_out = random.randint(10, total_users)
+            remaining_users = total_users - users_cashed_out
+            prize_text = float(self.prize_button.text().replace(",", "").replace("+", "").strip() or 0)
+
+            if users_remaining == 0 and prize_text >= 1:
+                self.users_remaining_button.setText(f"{remaining_users:,.0f}")
+
+            if users_remaining == 0 and prize_text >= 1:
+                self.users_remaining_button.setText(f"{remaining_users:,.0f}")
+
+            elif users_remaining != 0 and prize_text >= 1:
+                self.users_remaining_button.setText(f"{remaining_users:,.0f}")
+
+            elif users_remaining != 0 and prize_text >= 1:
+                self.users_remaining_button.setText(f"{remaining_users:,.0f}")
+
+        except Exception as e:
+            print("Reducing() error:", e)
+
     def prize_determinant(self):
         try:
             v1 = int(self.num_of_matched_buttonsL.text().strip() or 0)
             v2 = int(self.num_of_matched_buttons.text().strip() or 0)
-            v3 = float(self.total_amount_button.text().replace(",", "").strip() or 0)
-            v4 = float(self.amount_cashed_out_button.text().replace(",", "").strip() or 0)
-            v5 = float(self.developers_wallet_button.text().replace(",", "").strip() or 0)
-
             x1 = self.button1.text().strip()
             x2 = self.button2.text().strip()
             x3 = self.button3.text().strip()
@@ -836,7 +878,7 @@ class MainWindow(QMainWindow):
             x5 = self.button5.text().strip()
             x6 = self.button6.text().strip()
 
-            if x1 == x2 == x3 == x4 == x5 == x6:
+            if (x1 == x2 == x3 == x4 == x5 == x6) and x1 != "6":
                 new_tot = float(self.prize_button.text().strip() or 0)
                 if x1 == "1":
                     try:
@@ -860,8 +902,6 @@ class MainWindow(QMainWindow):
                 self.prize_button.setText(f"{total:.2f}") if total < 0 else self.prize_button.setText(
                     f"+{total:.2f}")
 
-                if x1 == "6":
-                    self.trigger_liquidation()
 
 
             elif ((x1 == x2 == x3) or (x4 == x5 == x6)) and not (x1 == x2 == x3 == x4 == x5 == x6):
@@ -881,17 +921,6 @@ class MainWindow(QMainWindow):
                 # ✅ single place to update the UI
                 self.prize_button.setText(f"{total:.2f}" if total < 0 else f"+{total:.2f}")
 
-            try:
-                prize_value = float(self.prize_button.text().strip() or 0)
-                all_cards = int(self.all_matched_button.text().strip() or 0)
-                if (prize_value <= -500 and all_cards <= 3) or (prize_value <= -700 and all_cards <= 6):
-                    self.trigger_liquidation()
-
-
-
-            except ValueError as e:
-                print(e)
-
         except:
             pass
 
@@ -900,7 +929,6 @@ class MainWindow(QMainWindow):
 
     def trigger_liquidation(self):
         self.automation_timer.stop()
-        self.status_layout_display()
         self.instruction_label.setText("Liquidated")
         self.instruction_label.setGeometry(245, 100, 110, 35)
         self.instruction_label.setStyleSheet("""
@@ -931,25 +959,19 @@ class MainWindow(QMainWindow):
                                             "color: blue;"
                                             "border-radius: 10px;")
 
-    def status_layout_display(self):
+    def amount_display(self):
         try:
             vv = float(self.total_amount_button.text().replace(",", "").strip() or 0)
+            tt = float(self.amount_cashed_out_button.text().replace(",", "").strip() or 0)
+
             zz = int(self.all_matched_button.text().replace(",", "").strip() or 0)
-            zzz = self.button1.text().strip()
             xx = float(self.prize_button.text().replace(",", "").strip() or 0)
             m = float(self.developers_wallet_button.text().replace(",", "").strip() or 0)
+            if vv == 0:
+                vx = m + vv
+                self.developers_wallet_button.setText(f"{vx:,.2f}")
 
-            # Condition 1: Liquidation (negative threshold)
-            if xx <= -500 and zz <= 6:
-                cc = vv + m
-                self.developers_wallet_button.setText(f"{cc:,.2f}")
-                print("⚠️ Liquidation triggered")
 
-            # Condition 2: All cards are '6' (upper trigger), but only if not already liquidated
-            elif zzz == "6" and xx >= -500 and zz <= 6:
-                cc = vv + m
-                self.developers_wallet_button.setText(f"{cc:,.2f}")
-                print("💰 All cards = 6 trigger")
 
         except Exception as e:
             print("Status layout error:", e)
@@ -969,10 +991,14 @@ class MainWindow(QMainWindow):
             self.matched_buttons = 0
             self.matched_buttonsL = 0
             self.all_matched = 0
-            self.total_amount_button.setText("0")
-            self.total_users_button.setText("0")
-            self.users_remaining_button.setText("0")
-            self.amount_cashed_out_button.setText("0.00")
+            self.total_amount = 0
+            self.total_amount_button.setText(str(self.total_amount))
+            self.total_users = 0
+            self.total_users_button.setText(str(self.total_users))
+            self.users_remaining = 0
+            self.users_remaining_button.setText(str(self.users_remaining))
+            self.amount_cashed_out = 0
+            self.amount_cashed_out_button.setText(str(self.amount_cashed_out))
 
             # ✅ Reset UI values (everything except wallet)
             self.remaining_attempts_button.setText("0")
@@ -1000,62 +1026,17 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(0, do_reset)
 
     def pause2(self):
-        x1 = self.button1.text().strip()
-        x2 = self.button2.text().strip()
-        x3 = self.button3.text().strip()
-        x4 = self.button4.text().strip()
-        x5 = self.button5.text().strip()
-        x6 = self.button6.text().strip()
-        self.trigger_liquidation() if (x1 == "6" and x2 == "6" and x3 == "6" and x4 == "6" and x5 == "6" and x6 == "6") \
-            else self.instruction_label.setText("Automation paused.")
+        self.instruction_label.setText("Automation paused.")
         self.instruction_label.setGeometry(230, 80, 700, 50)
         self.instruction_label.setStyleSheet("color: red;"
                                              "font-size: 25px;")
         self.automation_timer.stop()
+        self.natural_liquidation()
         self.prize_determinant()
-        self.status_layout_display()
-        QTimer.singleShot(10, self.reducing_users)
-
         QTimer.singleShot(4500, lambda: (
             self.automation_timer.start(1),
             self.reset_r(),
         ))
-
-    def users_update(self):
-        amount = random.choice([10, 20, 40, 50, 100, 200, 400, 500, 1000])
-        players = random.choice([500, 800, 1000, 2000, 3000])
-        tot_amount = amount * players
-        self.total_users_button.setText(str(f"{players:,.0f}"))
-        self.total_amount_button.setText(str(f"{tot_amount:,.0f}"))
-
-    def reducing_users(self):
-        try:
-            total_users = int(self.total_users_button.text().replace(",", "").strip() or 0)
-            users_remaining = int(self.users_remaining_button.text().replace(",", "").strip() or 0)
-            users_cashed_out = random.randint(1, total_users)
-            dd = total_users - users_cashed_out
-
-            # ✅ Safely parse prize
-            prize_text = float(self.prize_button.text().replace(",", "").replace("+", "").strip() or 0)
-
-            # ✅ Condition logic
-            if users_remaining == 0 and prize_text >= 1 and (self.button1.text().strip() != "6"):
-                self.users_remaining_button.setText(f"{dd:,.0f}")
-
-            if users_remaining == 0 and prize_text >= 1 and (self.button1.text().strip() == "6"):
-                eee = 000
-                self.users_remaining_button.setText(f"{eee:,.0f}")
-
-            elif users_remaining != 0 and prize_text >= 1 and self.button1.text().strip() != "6":
-                self.users_remaining_button.setText(f"{dd:,.0f}")
-
-            elif users_remaining != 0 and prize_text >= 1 and self.button1.text().strip() == "6":
-                self.users_remaining_button.setText(f"{dd:,.0f}")
-
-
-
-        except Exception as e:
-            print("Reducing() error:", e)
 
     def update_automated_attempts_display(self):
         self.maximum_attempts_button.setText(str(self.maximum_attempts))
