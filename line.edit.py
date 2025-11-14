@@ -24,9 +24,10 @@ class MainWindow(QMainWindow):
                                   "font-family: Arial;")
         self.line_edit.setPlaceholderText("Enter your name")
         self.button.clicked.connect(self.submit)
+
     def submit(self):
         text = self.line_edit.text()
-        self.label.setText(f"Vipi {text}😎")
+        self.label.setText(f"How are you {text}😎")
 
 def main():
     app = QApplication(sys.argv)

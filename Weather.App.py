@@ -89,22 +89,7 @@ class WeatherApp(QWidget):
         city = self.city_input.text()
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}"
 
-        #global response
-        #api_key = "403a95dce6ed0d48e5187cad809c87d3"
-        #city = self.city_input.text()
-
-        #if not city.strip():
-            #self.display_error("Please enter a city name.")
-            #return
-
-        self.temperature_label.setStyleSheet("font-size: 40px;")
-        self.emoji_label.clear()
-        self.description_label.clear()
-        self.get_weather_button.setEnabled(True)
-        #url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}"
-
         try:
-
             response = requests.get(url)
             response.raise_for_status()
             data = response.json()

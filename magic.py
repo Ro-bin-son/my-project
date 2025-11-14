@@ -58,7 +58,6 @@ class MainWindow(QMainWindow):
 
 
     def on_click1(self):
-        time.sleep(0.15)
         self.button1.setGeometry(170, 250, 500, 80)
         self.button1.setText("Loading..... please wait")
         self.label.setText("")
@@ -67,6 +66,7 @@ class MainWindow(QMainWindow):
         QTimer.singleShot(1000, self.start_questions)
         QTimer.singleShot(1000, lambda: self.lineEdit.show())
         QTimer.singleShot(1000, lambda: self.button1.show())
+
 
     def close_program(self):
         self.label.setText("Goodbye 👋")
