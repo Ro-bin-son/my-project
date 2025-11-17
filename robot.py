@@ -117,7 +117,7 @@ class MainWindow(QMainWindow):
         self.lineEdit.hide()
         self.time_label.hide()
         QTimer.singleShot(2000, self.close)  # close after 3 sec
-
+        
     def start_questions(self):
         self.question_index = 0
         self.show_question()
