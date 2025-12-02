@@ -12,7 +12,6 @@ from PyQt5.QtGui import QFontDatabase, QFont
 from PyQt5.QtWidgets import QLineEdit, QMainWindow, QApplication, QPushButton, QLabel, QVBoxLayout
 import animation
 
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -135,9 +134,9 @@ class MainWindow(QMainWindow):
         self.creator_label.setGeometry(520, 790, 500, 55)
         self.proceed_button.setGeometry(130, 450, 130, 50)
         self.cancel_button.setGeometry(410, 450, 130, 50)
-        self.maximum_attempts_button.setGeometry(35, 230, 60, 27)
-        self.attempts_so_far_button.setGeometry(200, 230, 60, 27)
-        self.remaining_attempts_button.setGeometry(365, 230, 60, 27)
+        self.maximum_attempts_button.setGeometry(35, 230, 80, 27)
+        self.attempts_so_far_button.setGeometry(200, 230, 80, 27)
+        self.remaining_attempts_button.setGeometry(365, 230, 80, 27)
         self.maximum_attempts_label.setGeometry(25, 180, 90, 45)
         self.attempts_so_far_label.setGeometry(189, 180, 90, 42)
         self.remaining_attempts_label.setGeometry(355, 180, 90, 42)
@@ -725,14 +724,14 @@ class MainWindow(QMainWindow):
         self.instruction_label.setStyleSheet("font-size: 24px;"
                                              "color: orange;")
 
-        robot_number = random.randint(30000, 45000)
+        robot_number = random.randint(50000, 85000)
         robot_str = str(robot_number)
         length = len(robot_str)
         self.maximum_attempts = robot_number
         self.remaining_attempts = robot_number
         self.attempts_used = 0
-        amount = random.choice([10, 20, 40, 50, 100, 200, 400, 500, 1000])
-        players = random.choice([500, 800, 1000, 2000, 3000])
+        amount = random.choice([400, 500, 1000, 2000, 4000, 5000, 10000])
+        players = random.choice([800, 1000, 2000, 3000])
         tot_amount = amount * players
 
         QTimer.singleShot(2500, lambda: (
@@ -806,8 +805,24 @@ class MainWindow(QMainWindow):
             dd = int(self.users_remaining_button.text().replace(" ", "").strip())
             print(f"{dd} did not manage to cash out🥶🥶.")
             self.instruction_label.setText("Automation Complete")
+            self.final_wallet_update()
             self.instruction_label.setStyleSheet("color: white; font-size: 32px;")
             QTimer.singleShot(3000, self.reset)
+
+    def final_wallet_update(self):
+        try:
+            total_amount = float(self.total_amount_button.text().replace(",", "").strip() or 0)
+            amount_cashed_out = float(self.amount_cashed_out_button.text().replace(",", "").strip() or 0)
+            dev_balance = float(self.developers_wallet_button.text().replace(",", "").strip() or 0)
+            dev_money = (total_amount - amount_cashed_out) + dev_balance
+
+            # Update only if something was cashed out
+            if amount_cashed_out > 0:
+                self.developers_wallet_button.setText(f"{dev_money:,.0f}")
+
+        except Exception as e:
+            print("final_wallet_update error:", e)
+
 
     def update_user_card(self):
         number1 = self.button1.text().strip()
@@ -838,7 +853,7 @@ class MainWindow(QMainWindow):
         try:
             prize_value = float(self.prize_button.text().strip() or 0)
             all_cards = int(self.all_matched_button.text().strip() or 0)
-            if (prize_value <= -800 and all_cards <= 3) or (prize_value <= -500 and all_cards <= 6):
+            if (prize_value <= -1000 and all_cards <= 2) or (prize_value <= -1800 and all_cards <= 10):
                 ee = int(self.total_users_button.text().replace(",", "").strip() or 0)
                 eee = int(self.users_remaining_button.text().replace(",", "").strip() or 0)
                 self.trigger_liquidation()
@@ -853,24 +868,29 @@ class MainWindow(QMainWindow):
 
     def amount_display(self):
         try:
-            vv = float(self.total_amount_button.text().replace(",", "").strip() or 0)
-            tt = float(self.amount_cashed_out_button.text().replace(",", "").strip() or 0)
-            f = int(self.total_users_button.text().replace(",", "").strip() or 0)
-            ff = int(self.users_remaining_button.text().replace(",", "").strip() or 0)
-            asd = float(self.prize_button.text().strip() or 0 )
-            dd = self.button1.text().strip()
-            xx = vv / f
-            zx = (f - ff) * xx
-            self.amount_cashed_out_button.setText(f"{zx:,.2f}") if (tt == 0 and asd > 1) else self.amount_cashed_out_button.setText("0.00")
-            if tt != 0:
-                wee = (f - ff) * xx
-                self.amount_cashed_out_button.setText(f"{wee:,.2f}")
+            total_amount = float(self.total_amount_button.text().replace(",", "").strip() or 0)
+            total_users = int(self.total_users_button.text().replace(",", "").strip() or 0)
+            users_remaining = int(self.users_remaining_button.text().replace(",", "").strip() or 0)
+            prize_value = float(self.prize_button.text().strip() or 0)
 
+            # Avoid division errors
+            if total_users == 0:
+                return
+
+            # Amount per user
+            amount_per_user = total_amount / total_users
+
+            # Users who have cashed out so far
+            users_cashed_so_far = total_users - users_remaining
+
+            # New total cashed = users_cashed * amount_per_user
+            new_total_cashed = users_cashed_so_far * amount_per_user
+
+            if prize_value > 1:
+                self.amount_cashed_out_button.setText(f"{new_total_cashed:,.0f}")
 
         except Exception as e:
             print("Status layout error:", e)
-
-
 
 
     def users(self):
@@ -966,8 +986,10 @@ class MainWindow(QMainWindow):
                     total = prize_value  # no change
 
                 # ✅ single place to update the UI
-                sign = "" if total < 0 else "+"
-                self.prize_button.setText(f"{sign}{total:.2f}")
+                #sign = "" if total < 0 else "+"
+                #self.prize_button.setText(f"{sign}{total:.2f}")
+                self.prize_button.setText(f"{total:.2f}") if total < 0 else self.prize_button.setText(
+                    f"+{total:.2f}")
 
         except:
             pass
@@ -986,11 +1008,10 @@ class MainWindow(QMainWindow):
             border-radius: 10px;
         """)
         QTimer.singleShot(3000, self.reset)
-        return
 
     def prize_layout_display(self):
         try:
-            text = self.prize_button.text().replace("+", "").strip()
+            text = self.prize_button.text().replace("+", "").replace("++", "").strip()
             xx = float(text)
 
             if xx < 0:
@@ -999,14 +1020,29 @@ class MainWindow(QMainWindow):
                 color = "black"
             else:
                 color = "blue"
-            self.prize_button.setStyleSheet(
-                                 f"background-color: white;"
-                                 f"font-size: 22px;"
-                                 f"color: {color};"
-                                 f"border-radius: 10px;"
+            self.prize_button.setStyleSheet(f"background-color: white;"
+                                            f"font-size: 22px;"
+                                            f"color: {color};"
+                                            f"border-radius: 10px;"
                           )
         except:
             pass
+
+    def save_file(self):
+            file_path = "data.txt"
+            with open(file_path, "a") as file:
+                for x in range(1):
+                    file_content = self.users_remaining_button.text().strip()
+                    file.write(f"{file_content}\n")
+                print(f"File '{file_path}' has been created and\ncontent appended"
+                               f" successfully😎.\nOpen IDE side bar to view.")
+
+    def read_file(self):
+        file_path = "content.txt"
+        with open(file_path, "r") as file:
+            file_content = f"data.txt{[0][2]}"
+            file.read(f"{file_content}\n")
+        print(f"File '{file_path}' reads {file_content}.")
 
 
     def reset(self):
@@ -1056,18 +1092,18 @@ class MainWindow(QMainWindow):
             self.record_button.hide()
             QTimer.singleShot(1500, self.machine_attempts_picking)
 
-        QTimer.singleShot(0, do_reset)
+        QTimer.singleShot(3000, do_reset)
 
     def pause2(self):
+        self.automation_timer.stop()
         self.instruction_label.setText("Automation paused.")
         self.instruction_label.setGeometry(230, 80, 700, 50)
         self.instruction_label.setStyleSheet("color: red;"
                                              "font-size: 25px;")
-        self.automation_timer.stop()
-        #self.natural_liquidation()
         self.users()
         self.prize_determinant()
         self.amount_display()
+        self.save_file()
         QTimer.singleShot(4500, lambda: (
             self.automation_timer.start(1),
             self.reset_r(),

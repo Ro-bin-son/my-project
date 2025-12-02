@@ -12,7 +12,6 @@ from PyQt5.QtGui import QFontDatabase, QFont
 from PyQt5.QtWidgets import QLineEdit, QMainWindow, QApplication, QPushButton, QLabel, QVBoxLayout
 import animation
 
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -20,8 +19,10 @@ class MainWindow(QMainWindow):
         self.label = QLabel(self)
         self.intro_label = QLabel(self)
         self.instruction_label = QLabel(self)
-        self.instruction_label = QLabel("Choose your attempts (50 – 100) and press\n‘Record’ to record and start Game",
-                                        self)
+        self.home_layout_label = QLabel(self)
+        self.sign_in_layout_button = QPushButton(self)
+        self.sign_out_layout_button = QPushButton(self)
+
         self.creator_label = QLabel("Developed by Robin", self)
         self.maximum_attempts_label = QLabel("Selected\nAttempts:", self)
         self.attempts_so_far_label = QLabel("Attempts\nUsed:", self)
@@ -32,11 +33,9 @@ class MainWindow(QMainWindow):
         self.record_button = QPushButton("Record", self)
         self.popup = QWidget(self)
         self.popup_label = QLabel(self)
-        self.manual_mode_label = QLabel(self)
         self.automatic_mode_label = QLabel(self)
         self.no_button = QPushButton(self)
         self.confirm_button = QPushButton(self)
-        self.manual_button = QPushButton(self)
         self.automatic_button = QPushButton(self)
         self.okay_button = QPushButton("Okay", self)
         self.num_of_matched_buttons = QPushButton(self)
@@ -75,8 +74,8 @@ class MainWindow(QMainWindow):
         self.credentials_label = QLabel(self)
         self.line_edit1 = QLineEdit(self)
         self.line_edit2 = QLineEdit(self)
-        self.line_edit1_label = QLabel("Your name:", self)
-        self.line_edit2_label = QLabel("Your password:", self)
+        self.line_edit1_label = QLabel("User name:", self)
+        self.line_edit2_label = QLabel("Password:", self)
         self.allow_button = QPushButton(self)
         self.matched_buttons = 0
         self.matched_buttonsL = 0
@@ -123,7 +122,7 @@ class MainWindow(QMainWindow):
         credentials = [self.credentials_label, self.line_edit1, self.line_edit2]
         for field in credentials:
             field.hide()
-        mode_labels = [self.manual_mode_label, self.automatic_mode_label]
+        mode_labels = [self.automatic_mode_label]
         for label in mode_labels:
             label.hide()
         for w in (self.check1, self.check2, self.check3, self.okay_button):
@@ -135,9 +134,9 @@ class MainWindow(QMainWindow):
         self.creator_label.setGeometry(520, 790, 500, 55)
         self.proceed_button.setGeometry(130, 450, 130, 50)
         self.cancel_button.setGeometry(410, 450, 130, 50)
-        self.maximum_attempts_button.setGeometry(35, 230, 60, 27)
-        self.attempts_so_far_button.setGeometry(200, 230, 60, 27)
-        self.remaining_attempts_button.setGeometry(365, 230, 60, 27)
+        self.maximum_attempts_button.setGeometry(35, 230, 80, 27)
+        self.attempts_so_far_button.setGeometry(200, 230, 80, 27)
+        self.remaining_attempts_button.setGeometry(365, 230, 80, 27)
         self.maximum_attempts_label.setGeometry(25, 180, 90, 45)
         self.attempts_so_far_label.setGeometry(189, 180, 90, 42)
         self.remaining_attempts_label.setGeometry(355, 180, 90, 42)
@@ -256,11 +255,7 @@ class MainWindow(QMainWindow):
         except Exception:
             pass
         self.cancel_button.clicked.connect(self.cancel_stage)
-
-        # prepare mode button connections (but hide them until used)
-        self.manual_button.clicked.connect(self.arranging_mechanics)
-        self.intro()
-
+        self.entry_passkey_layout()
         # ---------- safe wrappers that catch exceptions ----------
 
     def safe_instructions(self):
@@ -273,35 +268,25 @@ class MainWindow(QMainWindow):
 
     def safe_mode_selection(self):
         try:
-            self.mode_selection()
+            self.arranging_mechanics()
 
         except Exception:
             pass
 
-    def intro(self):
-        self.manual_button.hide()
+    def entry_passkey_layout(self):
+        self.line_edit1_label.hide()
+        self.line_edit2_label.hide()
+        self.proceed_button.hide()
+        self.cancel_button.hide()
+        self.allow_button.hide()
+        self.intro_label.hide()
         self.automatic_button.hide()
         self.confirm_button.hide()
         self.no_button.hide()
-        self.cancel_button.show()
-        self.creator_label.setGeometry(520, 810, 150, 30)
-        self.intro_label.setGeometry(40, 40, 800, 300)
-        self.intro_label.setStyleSheet("font-size: 28px;" "color: grey;")
-
-        self.intro_label.setText("Welcome to a game powered by probability,\nprecision, and pure machine intelligence."
-                                 " Every\nmatch reveals a pattern."
-                                 " You are about to enter\na live environment where results are recorded in\nreal time."
-                                 " Click 'Proceed' to read instructions on\nhow to play or 'Cancel' to exit game.")
-        self.hide_staffs()
-        # ensure proceed is connected to the safe wrapper (no duplicates)
-        # try:
-        # self.proceed_button.clicked.disconnect()
-        # except Exception:
-        # pass
-        # self.proceed_button.clicked.connect(self.entry_passkey_layout)
-        self.proceed_button.clicked.connect(self.clicking)
-
-    def entry_passkey_layout(self):
+        self.cancel_button.hide()
+        self.home_layout_label.show()
+        self.sign_in_layout_button.hide()
+        self.sign_out_layout_button.show()
         self.line_edit1_label.show()
         self.line_edit2_label.show()
         self.proceed_button.hide()
@@ -311,44 +296,57 @@ class MainWindow(QMainWindow):
         credentials = [self.credentials_label, self.line_edit1, self.line_edit2]
         for field in credentials:
             field.show()
-        self.credentials_label.setText("Please fill out the following fields:")
+        self.credentials_label.setText("Sign in:")
         self.credentials_label.setStyleSheet("font-size: 24px;"
-                                             "color: white;")
-        self.line_edit1.setPlaceholderText("Enter your name here")
+                                             "color: grey;")
+        self.line_edit1.setPlaceholderText("Enter your user name")
         self.line_edit1.setStyleSheet("font-size: 16px;"
-                                      "color: white;"
-                                      "background-color: black;")
+                                      "color: black;"
+                                      "background-color: white;")
 
-        self.line_edit2.setPlaceholderText("Enter your password here")
+        self.line_edit2.setPlaceholderText("Enter your password")
         self.line_edit2.setStyleSheet("font-size: 16px;"
-                                      "color: white;"
-                                      "background-color: black;")
+                                      "color: black;"
+                                      "background-color: white;")
 
-        self.allow_button.setText("Send")
+        self.allow_button.setText("Sign in")
+        self.home_layout_label.setText("Sign in to your account\n to continue.")
+
         self.allow_button.setStyleSheet("font-size: 22px;"
                                         "color: white;"
-                                        "background-color: green;")
+                                        "background-color: #008fcc;")
         self.line_edit1_label.setStyleSheet("font-size: 17px;"
                                             "color: white;")
         self.line_edit2_label.setStyleSheet("font-size: 17px;"
                                             "color: white;")
+        self.home_layout_label.setGeometry(150, 20, 800, 80)
+        self.home_layout_label.setText("Sign in to your account\n to continue.")
+        self.home_layout_label.setStyleSheet("font-size: 35px;" "color: grey;")
+        self.sign_in_layout_button.setStyleSheet("font-size: 25px;"
+                                                 "Background-color: #008fcc;"
+                                                 "color: white")
+        self.sign_out_layout_button.setStyleSheet("font-size: 25px;"
+                                                  "Background-color: grey;"
+                                                  "color: white")
+        self.sign_out_layout_button.setText("Cancel")
 
-        self.credentials_label.setGeometry(100, 40, 400, 40)
-        self.line_edit1.setGeometry(140, 130, 400, 40)
-        self.line_edit2.setGeometry(140, 230, 400, 40)
-        self.allow_button.setGeometry(260, 450, 110, 50)
-        self.line_edit1_label.setGeometry(140, 100, 110, 30)
-        self.line_edit2_label.setGeometry(140, 200, 110, 30)
-        self.clicking()
-
-    def clicking(self):
-        # ✅ IMPORTANT: now connect record_button here
+        self.credentials_label.setGeometry(280, 120, 400, 40)
+        self.sign_out_layout_button.setGeometry(380, 450, 120, 50)
+        self.line_edit1.setGeometry(140, 200, 400, 40)
+        self.line_edit2.setGeometry(140, 300, 400, 40)
+        self.allow_button.setGeometry(160, 450, 120, 50)
+        self.line_edit1_label.setGeometry(140, 170, 150, 30)
+        self.line_edit2_label.setGeometry(140, 270, 150, 30)
         try:
             self.allow_button.clicked.disconnect()
-        except:
+        except Exception:
             pass
-        # self.allow_button.clicked.connect(self.verifier)  # ✅ Now recording runs ONLY after user clicks
-        self.allow_button.clicked.connect(self.safe_instructions)  # ✅ Now recording runs ONLY after user clicks
+        self.allow_button.clicked.connect(self.verifier)
+        try:
+            self.sign_out_layout_button.clicked.disconnect()
+        except Exception:
+            pass
+        self.sign_out_layout_button.clicked.connect(self.exit_game2)
 
     def verifier(self):
         name = self.line_edit1.text().strip()
@@ -370,9 +368,70 @@ class MainWindow(QMainWindow):
             else:
                 pass
 
-        # If everything is valid, you can proceed here:
         if all_valid:
-            self.allow_button.clicked.connect(self.safe_instructions)
+            self.intro()
+            self.store_credentials_safely()
+
+    def store_credentials_safely(self):
+        try:
+            import json
+            file_path = "Credentials.json"
+            with open(file_path, "w") as file:
+                file_content1 = self.line_edit1.text().strip().capitalize()
+                file_content2 = self.line_edit2.text().strip()
+                format = {"Name" : f"{file_content1}",
+                         "Password": f"{file_content2}"}
+                json.dump(format, file, indent= 4)
+                print(f"json file '{file_path}' has been created and\ncontent appended"
+                      f" successfully😎.\nCheck IDE side bar to view.")
+
+        except FileExistsError:
+            print("That file exists already ")
+        self.read_credentials()
+
+
+    def read_credentials(self):
+        import json
+        file_path = "Credentials.json"
+        with open(file_path, "r") as file:
+            content = json.load(file)
+            print(content["Password"])
+    def verifying_sign(self):
+        pass
+    def intro(self):
+        self.home_layout_label.hide()
+        self.sign_in_layout_button.hide()
+        self.sign_out_layout_button.hide()
+        self.automatic_button.hide()
+        self.confirm_button.hide()
+        self.no_button.hide()
+        self.proceed_button.show()
+        self.cancel_button.show()
+        self.intro_label.show()
+        self.line_edit1.hide()
+        self.line_edit2.hide()
+        self.credentials_label.hide()
+        self.allow_button.hide()
+        self.line_edit1_label.hide()
+        self.line_edit2_label.hide()
+        self.creator_label.setGeometry(520, 810, 150, 30)
+        self.intro_label.setGeometry(40, 40, 800, 300)
+        self.intro_label.setStyleSheet("font-size: 28px;" "color: grey;")
+
+        self.intro_label.setText("Welcome to a game powered by probability,\nprecision, and pure machine intelligence."
+                                 " Every\nmatch reveals a pattern."
+                                 " You are about to enter\na live environment where results are recorded in\nreal time."
+                                 " Click 'Proceed' to read instructions on\nhow to play or 'Cancel' to exit game.")
+        self.hide_staffs()
+        self.proceed_button.clicked.connect(self.clicking)
+
+    def clicking(self):
+        try:
+            self.allow_button.clicked.disconnect()
+        except:
+            pass
+        self.allow_button.clicked.connect(self.safe_instructions)
+
 
     def shaking(self, widget):
         ### 1️⃣ SHAKE EFFECT
@@ -437,73 +496,16 @@ class MainWindow(QMainWindow):
             pass
         self.cancel_button.clicked.connect(self.cancel_stage)
 
-    def mode_selection(self):
-        self.okay_button.hide()
-        self.manual_button.show()
-        self.automatic_button.show()
-        self.proceed_button.hide()
-        self.cancel_button.hide()
-        self.intro_label.setText("Select to choose 'Manual' or 'Automatic'\nmode.")
-        self.intro_label.setStyleSheet("font-size: 26px;"
-                                       "color: white;")
-        self.manual_button.setStyleSheet("font-size: 26px;"
-                                         "color: white;"
-                                         "background-color: hsl(30, 100%, 45%);")
-        self.automatic_button.setStyleSheet("font-size: 26px;"
-                                            "color: white;"
-                                            "background-color: hsl(0, 100%, 34%);")
-        self.intro_label.setGeometry(60, 60, 800, 70)
-        self.manual_button.setText("Manual")
-        self.automatic_button.setText("Automatic")
-        self.manual_button.setGeometry(90, 350, 160, 50)
-        self.automatic_button.setGeometry(410, 350, 160, 50)
-
-        # make sure connections are not stacked
-        try:
-            self.manual_button.clicked.disconnect()
-        except Exception:
-            pass
-        self.manual_button.clicked.connect(self.technicalities)
-
-        try:
-            self.automatic_button.clicked.disconnect()
-        except Exception:
-            pass
-        # self.automatic_button.clicked.connect(self.production)
-        self.automatic_button.clicked.connect(self.automatic_mode_layout)
-
-    def technicalities(self):
-        self.okay_button.show()
-        self.manual_button.hide()
-        self.automatic_button.hide()
-        self.intro_label.setGeometry(60, 60, 800, 180)
-        self.okay_button.setText("Okay")
-        self.okay_button.setGeometry(280, 380, 100, 45)
-        self.okay_button.setStyleSheet("font-size: 24px;"
-                                       "color: white;"
-                                       "background-color: red;")
-        self.intro_label.setText(
-            "We are experiencing some technicalities on manual\nsystems. Our developers are working"
-            " on it to restore\nits full operation. We will notify you"
-            " once it is solved.\nMeanwhile, you can play in Automatic mode by\nclicking 'Automatic' button. Sorry for inconveniences\ncaused.")
-        self.intro_label.setStyleSheet("color: orange;"
-                                       "font-size: 25px;")
-
-        try:
-            self.okay_button.clicked.disconnect()
-        except:
-            pass
-        self.okay_button.clicked.connect(self.mode_selection)
 
     def arranging_mechanics(self):
         try:
             self.automatic_button.clicked.disconnect()
         except Exception:
             pass
-        self.manual_mode_label.show()
         self.hide_staffs()
-        self.manual_button.hide()
         self.automatic_button.hide()
+        self.proceed_button.hide()
+        self.cancel_button.hide()
         self.check1.hide()
         self.check2.hide()
         self.check3.hide()
@@ -514,9 +516,6 @@ class MainWindow(QMainWindow):
         self.intro_label.setGeometry(150, 200, 700, 50)
         self.intro_label.setStyleSheet("color: orange;"
                                        "font-size: 25px;")
-        self.manual_mode_label.setStyleSheet("color: orange;")
-        self.manual_mode_label.setText("Manual Mode")
-        self.manual_mode_label.setGeometry(40, 30, 100, 30)
         self.check1.show(),
         self.check1.setText("Initializing button responsiveness....."),
         self.check1.setChecked(False),
@@ -540,43 +539,17 @@ class MainWindow(QMainWindow):
             self.record_button.clicked.disconnect()
         except Exception:
             pass
-        QTimer.singleShot(15000, self.show_user_input_stage)
+        QTimer.singleShot(15000, self.automatic_mode_layout)
 
-    def show_user_input_stage(self):
-        self.num_of_matched_buttons.show()
-        self.num_of_matched_label.show()
-        self.num_of_matched_label.setGeometry(500, 180, 150, 42)
-        self.num_of_matched_buttons.setGeometry(530, 230, 45, 27)
-        self.num_of_matched_label.setStyleSheet("font-size: 17px;"
-                                                "color: green;")
-        self.num_of_matched_buttons.setStyleSheet("background-color: orange;"
-                                                  "font-size: 19px;"
-                                                  "color: black;")
-        self.num_of_matched_label.setText("Number of times\nnumbers matchedU:")
-        self.manual_mode_label.setGeometry(20, 75, 100, 30)
-        self.check1.hide()
-        self.check2.hide()
-        self.check3.hide()
-        self.show_staffs()
-        self.intro_label.hide()
-        self.instruction_label.show()
-        self.instruction_label.setText("Enter attempts (50-100) then click 'Record' and\nstart game")
-        # ✅ IMPORTANT: now connect record_button here
-        try:
-            self.record_button.clicked.disconnect()
-        except:
-            pass
-        self.record_button.clicked.connect(self.recording)  # ✅ Now recording runs ONLY after user clicks
 
     def automatic_mode_layout(self):
         try:
             self.record_button.clicked.disconnect()
         except:
             pass
-        try:
-            self.manual_button.clicked.disconnect()
-        except:
-            pass
+        self.check1.hide()
+        self.check2.hide()
+        self.check3.hide()
         self.total_users_button.show()
         self.total_users_label.show()
         self.total_amount_button.show()
@@ -700,11 +673,10 @@ class MainWindow(QMainWindow):
 
         self.automatic_mode_label.show()
         self.automatic_button.hide()
-        self.manual_button.hide()
         self.show_staffs()
         self.lineEdit.hide()
-        self.instruction_label.setText("Click 'Enter' to get into Game")
-        self.record_button.setText("Enter")
+        self.instruction_label.setText("Click 'Connect' to get into Game")
+        self.record_button.setText("Connect")
         self.record_button.setStyleSheet("font-size: 22px;")
         self.automatic_mode_label.setText("Automatic Mode")
         self.automatic_mode_label.setGeometry(300, 0, 100, 30)
@@ -725,14 +697,14 @@ class MainWindow(QMainWindow):
         self.instruction_label.setStyleSheet("font-size: 24px;"
                                              "color: orange;")
 
-        robot_number = random.randint(85000, 105000)
+        robot_number = random.randint(50000, 85000)
         robot_str = str(robot_number)
         length = len(robot_str)
         self.maximum_attempts = robot_number
         self.remaining_attempts = robot_number
         self.attempts_used = 0
-        amount = random.choice([10, 20, 40, 50, 100, 200, 400, 500, 1000])
-        players = random.choice([500, 800, 1000, 2000, 3000])
+        amount = random.choice([400, 500, 1000, 2000, 4000, 5000, 10000])
+        players = random.choice([800, 1000, 2000, 3000])
         tot_amount = amount * players
 
         QTimer.singleShot(2500, lambda: (
@@ -887,9 +859,7 @@ class MainWindow(QMainWindow):
             # New total cashed = users_cashed * amount_per_user
             new_total_cashed = users_cashed_so_far * amount_per_user
 
-            # Only update display after multiplier passes 1.00
             if prize_value > 1:
-                # Update UI with remaining amount
                 self.amount_cashed_out_button.setText(f"{new_total_cashed:,.0f}")
 
         except Exception as e:
@@ -1011,7 +981,6 @@ class MainWindow(QMainWindow):
             border-radius: 10px;
         """)
         QTimer.singleShot(3000, self.reset)
-        return
 
     def prize_layout_display(self):
         try:
@@ -1032,6 +1001,21 @@ class MainWindow(QMainWindow):
         except:
             pass
 
+    def save_file(self):
+            file_path = "data.txt"
+            with open(file_path, "a") as file:
+                for x in range(1):
+                    file_content = self.users_remaining_button.text().strip()
+                    file.write(f"{file_content}\n")
+                print(f"File '{file_path}' has been created and\ncontent appended"
+                               f" successfully😎.\nOpen IDE side bar to view.")
+
+    def read_file(self):
+        file_path = "content.txt"
+        with open(file_path, "r") as file:
+            file_content = f"data.txt{[0][2]}"
+            file.read(f"{file_content}\n")
+        print(f"File '{file_path}' reads {file_content}.")
 
 
     def reset(self):
@@ -1081,17 +1065,18 @@ class MainWindow(QMainWindow):
             self.record_button.hide()
             QTimer.singleShot(1500, self.machine_attempts_picking)
 
-        QTimer.singleShot(0, do_reset)
+        QTimer.singleShot(3000, do_reset)
 
     def pause2(self):
+        self.automation_timer.stop()
         self.instruction_label.setText("Automation paused.")
         self.instruction_label.setGeometry(230, 80, 700, 50)
         self.instruction_label.setStyleSheet("color: red;"
                                              "font-size: 25px;")
-        self.automation_timer.stop()
         self.users()
         self.prize_determinant()
         self.amount_display()
+        self.save_file()
         QTimer.singleShot(4500, lambda: (
             self.automation_timer.start(1),
             self.reset_r(),
@@ -1150,102 +1135,7 @@ class MainWindow(QMainWindow):
         for attempt_label in attempt_labels:
             attempt_label.show()
 
-    def recording(self):
-        number = self.lineEdit.text().strip()
-        if number == "":
-            # QApplication.beep()
-            self.shaking_effect()
-            self.instruction_label.hide()
-            self.label.show(),
-            self.label.setText("You did not enter anything.")
-            self.label.setStyleSheet("color: red;"
-                                     "font-size: 22px;")
-            QTimer.singleShot(2000, lambda: (
-                self.instruction_label.show(),
-                self.label.hide(),
-            ))
 
-            return  # Stop here so no further code runs
-
-        try:
-            sender = int(number)
-        except ValueError:
-            # QApplication.beep()
-            self.shaking_effect()
-            self.instruction_label.hide()
-            self.label.show()
-            self.label.setText("Please enter a valid number.")
-            self.label.setStyleSheet("color: red;"
-                                     "font-size: 22px;")
-            QTimer.singleShot(2000, lambda: (
-                self.instruction_label.show(),
-                self.lineEdit.setText(""),
-                self.label.hide(),
-            ))
-            return
-
-        if sender > 100 and sender != 666:
-            # QApplication.beep()
-            self.shaking_effect()
-            self.instruction_label.hide()
-            self.label.show()
-            self.label.setText("Attempts cannot be more than 100.")
-            self.label.setStyleSheet("color: red;"
-                                     "font-size: 22px;")
-            QTimer.singleShot(2000, lambda: (
-                self.instruction_label.show(),
-                self.lineEdit.setText(""),
-                self.label.hide(),
-            ))
-        elif sender > 100 and sender == 666:
-            # QApplication.beep()
-            self.shaking_effect2()
-            self.blinking_effect2()
-            self.instruction_label.hide()
-            self.label.show()
-            self.label.setText("That number is strange💀💀💀")
-            self.label.setStyleSheet("color: red;"
-                                     "font-size: 22px;")
-            QTimer.singleShot(2000, lambda: (
-                self.instruction_label.show(),
-                self.lineEdit.setText(""),
-                self.label.hide(),
-            ))
-
-
-        else:
-            if sender < 50:
-                # QApplication.beep()
-                self.shaking_effect()
-                self.instruction_label.hide()
-                self.label.show()
-                self.label.setText("Attempts cannot be less than 50.")
-                self.label.setStyleSheet("color: red;"
-                                         "font-size: 22px;")
-                QTimer.singleShot(2000, lambda: (
-                    self.instruction_label.show(),
-                    self.lineEdit.setText(""),
-                    self.label.hide(),
-                ))
-
-            elif 50 <= sender <= 100:
-                self.maximum_attempts = sender
-                self.remaining_attempts = sender
-                self.attempts_used = 0
-                self.matched_buttons = 0
-                self.update_attempts_display()
-                self.start_card()
-
-    def manual_match_count(self):
-        num1 = self.button1.text().strip()
-        num2 = self.button2.text().strip()
-        num3 = self.button3.text().strip()
-        if (num1 == num2 == num3) and (num1 != "" and num2 != "" and num3 != ""):
-            self.matched_buttons += 1
-            self.update_attempts_display()
-            QApplication.beep()
-        else:
-            pass
 
     def update_attempts_display(self):
         self.maximum_attempts_button.setText(str(self.maximum_attempts))
@@ -1302,81 +1192,10 @@ class MainWindow(QMainWindow):
         self.anim_blink.setEndValue(2.0)  # Back to visible
         self.anim_blink.start()
 
-    def start_card(self):
-        self.label.show()
-        self.lineEdit.hide()
-        self.label.setText("Recorded")
-        self.label.setStyleSheet("color: red;"
-                                 "font-size: 24px;")
-        self.record_button.hide()
-        self.instruction_label.hide()
 
-        QTimer.singleShot(1500, lambda: (self.label.hide(),
-                                         self.record_button.show(),
-                                         self.instruction_label.show(),
-                                         self.record_button.setText("Reshuffle"),
-                                         self.record_button.setStyleSheet("color: white;"
-                                                                          "font-size: 20px;"
-                                                                          "background-color: hsl(40, 50%, 40%);"),
-                                         self.instruction_label.setText(
-                                             "Click the reshuffle button until either 3 upper\n"
-                                             "or lower cards match in numbers across."),
-                                         self.instruction_label.setStyleSheet("color: white;"
-                                                                              "font-size: 24px;")))
-        try:
-            self.record_button.clicked.disconnect()
-        except:
-            pass
-        self.record_button.clicked.connect(self.brain)
 
-    def decrement_attempts(self):
-        # Initialize on first run after pressing Start
-        self.record_button.setText("Reshuffle")
-        if self.maximum_attempts == 0:
-            try:
-                self.maximum_attempts = int(self.lineEdit.text().strip())
-            except:
-                self.label.setText("Invalid number!")
-                return
-
-            self.remaining_attempts = self.maximum_attempts
-            self.attempts_used = 0
-            self.update_attempts_display()
-
-        # Deduct an attempt
-        if self.remaining_attempts > 0:
-            self.attempts_used += 1
-            self.remaining_attempts -= 1
-            self.update_attempts_display()
-        else:
-            # QApplication.beep()
-            self.shaking_effect2()
-            self.instruction_label.show()
-            self.label.hide()
-            self.blinking_effect2()
-            QTimer.singleShot(0, lambda: (
-                self.instruction_label.setText("Game Over💀💀"),
-                self.instruction_label.setStyleSheet("color: red;"
-                                                     "font-size: 30px;"),
-                QTimer.singleShot(2500, lambda: (
-                    self.instruction_label.setText("Click ,'review' button to check integrity\nof the game"),
-                    self.instruction_label.setStyleSheet("color: white;"
-                                                         "font-size: 25px;"),
-                    ))))
-
-            self.instruction_label.setGeometry(150, 10, 500, 60)
-            self.record_button.setEnabled(False)  # Stop the game
-            self.record_button.setStyleSheet("background-color: black;"
-                                             "font-size: 21px;")
-            self.record_button.setText("Finished")
-
-    def reset_attempts(self):
-        self.attempts_used = 0
-        self.remaining_attempts = self.maximum_attempts
-        self.update_attempts_display()
 
     def cancel_stage(self):
-        self.intro_label.hide()
         try:
             self.proceed_button.clicked.disconnect()
         except Exception:
@@ -1386,6 +1205,9 @@ class MainWindow(QMainWindow):
         except Exception:
             pass
         self.intro_label.hide()
+        self.home_layout_label.hide()
+        self.sign_out_layout_button.hide()
+        self.sign_in_layout_button.hide()
         entry1_buttons = [self.proceed_button, self.cancel_button]
         for button in entry1_buttons:
             button.hide()
@@ -1442,6 +1264,11 @@ class MainWindow(QMainWindow):
                 """)
         self.confirm_button.clicked.connect(self.exit_game)
         self.confirm_button.show()
+
+    def exit_game2(self):
+        self.popup.hide()
+        self.intro_label.setText("")
+        QTimer.singleShot(100, self.close)  # close after 3 sec
 
     def exit_game(self):
         self.popup.hide()

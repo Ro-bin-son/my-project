@@ -1,350 +1,1266 @@
 import sys
 import time
 import random
+from PyQt5.QtCore import QPropertyAnimation, QRect
+from PyQt5.QtWidgets import QGraphicsOpacityEffect
+
 from PyQt5.QtCore import QTime, QTimer, Qt, QPoint, QEasingCurve
-from PyQt5.QtWidgets import QGraphicsOpacityEffect, QHBoxLayout, QWidget
+from PyQt5.QtWidgets import QGraphicsOpacityEffect, QHBoxLayout, QWidget, QCheckBox
 from PyQt5.QtCore import QPropertyAnimation
 from PyQt5.QtCore import QTimer, QPropertyAnimation
 from PyQt5.QtGui import QFontDatabase, QFont
 from PyQt5.QtWidgets import QLineEdit, QMainWindow, QApplication, QPushButton, QLabel, QVBoxLayout
-
+import animation
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setGeometry(500, 250, 800, 700)
-        self.setStyleSheet("background-color: hsl(124, 16%, 30%);")
-        self.time_label = QLabel(self)
-        self.label1 = QLabel(self)
-        self.timer = QTimer()
-        self.timer1 = QTimer()
+        self.setGeometry(1180, 90, 670, 840)
+        self.label = QLabel(self)
+        self.intro_label = QLabel(self)
+        self.instruction_label = QLabel(self)
+        self.home_layout_label = QLabel(self)
+        self.sign_in_layout_button = QPushButton(self)
+        self.sign_out_layout_button = QPushButton(self)
 
-        # Punchlines
-        self.punchlines = [
-            "Correct✔\nYou are the password to unlock\n my happiness 🔑❤️.",
-            "You are right✔\nEven AI cannot predict\nhow fine you are.",
-            "Good✔\nIf love was an exam, you \n already score A+ without\n trying.",
-            "That's correct✔\nYou shine more than my laptop\n screen when brightness is 100% ✨.",
-            "Correct✔\nThe way you know me, it's clear\n that only you is fit to operate my\n heart system."
-        ]
+        self.creator_label = QLabel("Developed by Robin", self)
+        self.maximum_attempts_label = QLabel("Selected\nAttempts:", self)
+        self.attempts_so_far_label = QLabel("Attempts\nUsed:", self)
+        self.remaining_attempts_label = QLabel("Attempts\nRemaining:", self)
+        self.maximum_attempts_button = QPushButton("", self)
+        self.attempts_so_far_button = QPushButton("", self)
+        self.remaining_attempts_button = QPushButton("", self)
+        self.record_button = QPushButton("Record", self)
+        self.popup = QWidget(self)
+        self.popup_label = QLabel(self)
+        self.automatic_mode_label = QLabel(self)
+        self.no_button = QPushButton(self)
+        self.confirm_button = QPushButton(self)
+        self.automatic_button = QPushButton(self)
+        self.okay_button = QPushButton("Okay", self)
+        self.num_of_matched_buttons = QPushButton(self)
+        self.num_of_matched_buttonsL = QPushButton(self)
+        self.num_of_matched_label = QLabel(self)
+        self.num_of_matched_labelL = QLabel(self)
+        self.all_matched_label = QLabel(self)
+        self.all_matched_button = QPushButton(self)
+        self.prize_label = QLabel(self)
+        self.prize_button = QPushButton(self)
+        self.loading_button = QPushButton(self)
+        self.loading_button1 = QPushButton(self)
+        self.developers_wallet_label = QLabel(self)
+        self.developers_wallet_button = QPushButton(self)
+        self.total_users_button = QPushButton(self)
+        self.total_users_label = QLabel(self)
+        self.total_amount_button = QPushButton(self)
+        self.total_amount_label = QLabel(self)
+        self.amount_cashed_out_label = QLabel(self)
+        self.amount_cashed_out_button = QPushButton(self)
+        self.users_remaining_button = QPushButton(self)
+        self.users_remaining_label = QLabel(self)
 
-        # Questions (list of dicts for flexibility)
-        self.questions = [
-            {"q": "Who is y", "answers": ["robinson", "robin"], "placeholder": "Type his name here"},
-            {"q": "How many elephant emojis do you\n see down here?\n  🐘🐇🐍🐘🦆🐤🐒🐘🐖🐘",
-             "answers": ["4", "four"], "placeholder": "Type your answer"},
-            {"q": "What is your favorite color?\n (blue/green/red)", "answers": ["blue", "green", "red"], "placeholder":
-                "Type your color"},
-            {"q": "Complete this: Love is ...?", "answers": ["sweet", "kind", "beautiful"],
-             "placeholder": "Type your answer here"},
-            {"q": "Do you like surprises? (yes/no)", "answers": ["yes", "no"], "placeholder": "Type yes or no"}
-        ]
-        # Shuffle the question order
-        random.shuffle(self.questions)
-
-        # Score counter
-        self.score = 0
-
-        # Widgets
-        self.label = QLabel(
-            "In today’s landscape, a majority of applications are automated\n"
-            "or accessed by bots. Our platform, however, maintains a strict\n"
-            "policy against non-human interactions. As part of our security\n"
-            "protocol, we require you to validate that you are indeed a\nhuman."
-            " Kindly proceed with the verification.",
-            self
-        )
-        self.button1 = QPushButton("Proceed", self)
-        self.button2 = QPushButton("Cancel", self)
+        self.check1 = QCheckBox(self)
+        self.check2 = QCheckBox(self)
+        self.check3 = QCheckBox(self)
+        self.button1 = QPushButton(self)
+        self.button2 = QPushButton(self)
+        self.button3 = QPushButton(self)
+        self.button4 = QPushButton(self)
+        self.button5 = QPushButton(self)
+        self.button6 = QPushButton(self)
+        self.proceed_button = QPushButton("Proceed", self)
+        self.cancel_button = QPushButton("Cancel", self)
         self.lineEdit = QLineEdit(self)
-        self.question_index = -1
-        self.lineEdit.hide()
+        self.credentials_label = QLabel(self)
+        self.line_edit1 = QLineEdit(self)
+        self.line_edit2 = QLineEdit(self)
+        self.line_edit1_label = QLabel("Your name:", self)
+        self.line_edit2_label = QLabel("Your password:", self)
+        self.allow_button = QPushButton(self)
+        self.matched_buttons = 0
+        self.matched_buttonsL = 0
+        self.all_matched = 0
+        self.rating_label = QLabel(self)
+        self.rating_button = QPushButton(self)
+        self.maximum_attempts = 0
+        self.attempts_used = 0
+        self.remaining_attempts = 0
+        self.number_of_rounds = 0
+        self.total_amount = 0
+        self.automation_timer = QTimer(self)
+        self.automation_timer.timeout.connect(self.automatic_click)
+
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle("Time's ticking🔽'")
-        self.label.setGeometry(70, 220, 1000, 150)
-        self.label1.setGeometry(0, 30, 700, 60)
+        self.total_users_button.hide()
+        self.total_users_label.hide()
+        self.total_amount_button.hide()
+        self.total_amount_label.hide()
+        self.amount_cashed_out_label.hide()
+        self.amount_cashed_out_button.hide()
+        self.users_remaining_button.hide()
+        self.users_remaining_label.hide()
 
+        self.loading_button.hide()
+        self.loading_button1.hide()
+        self.developers_wallet_button.hide()
+        self.developers_wallet_label.hide()
+        self.prize_label.hide()
+        self.prize_button.hide()
+        self.rating_label.hide()
+        self.rating_button.hide()
+        self.num_of_matched_labelL.hide()
+        self.num_of_matched_buttonsL.hide()
+        self.num_of_matched_label.hide()
+        self.num_of_matched_buttons.hide()
+        self.all_matched_label.hide()
+        self.all_matched_button.hide()
+        self.line_edit1_label.hide()
+        self.line_edit2_label.hide()
+        self.allow_button.hide()
+        credentials = [self.credentials_label, self.line_edit1, self.line_edit2]
+        for field in credentials:
+            field.hide()
+        mode_labels = [self.automatic_mode_label]
+        for label in mode_labels:
+            label.hide()
+        for w in (self.check1, self.check2, self.check3, self.okay_button):
+            w.hide()
+        self.hide_staffs()
+        self.setWindowTitle("HIGH SPEED SEEK GAME💀💀")
+        self.label.setGeometry(115, 10, 500, 55)
+        self.instruction_label.setGeometry(215, 10, 500, 55)
+        self.creator_label.setGeometry(520, 790, 500, 55)
+        self.proceed_button.setGeometry(130, 450, 130, 50)
+        self.cancel_button.setGeometry(410, 450, 130, 50)
+        self.maximum_attempts_button.setGeometry(35, 230, 80, 27)
+        self.attempts_so_far_button.setGeometry(200, 230, 80, 27)
+        self.remaining_attempts_button.setGeometry(365, 230, 80, 27)
+        self.maximum_attempts_label.setGeometry(25, 180, 90, 45)
+        self.attempts_so_far_label.setGeometry(189, 180, 90, 42)
+        self.remaining_attempts_label.setGeometry(355, 180, 90, 42)
+        self.intro_label.setGeometry(40, 40, 800, 300)
 
-        #self.label1.setAlignment(Qt.AlignCenter)
-        self.label1.setFont(QFont("Georgia", 28))
-        #self.layout.addWidget(self.label1)
-        # Word pool
-        self.words = ["P💖💖", "💖","🥰","💖" ]
+        self.proceed_button.setStyleSheet("font-size: 25px;" "color: grey;" "background-color: hsl(180, 38%, 17%)")
 
-        # Timer to trigger word change
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.show_magic_word)
-        self.timer.start(30000)  # every 8 seconds
+        self.cancel_button.setStyleSheet("font-size: 25px;" "color: grey;" "background-color: hsl(180, 38%, 29%)")
 
+        self.intro_label.setStyleSheet("font-size: 28px;" "color: grey;")
+        self.creator_label.setStyleSheet("font-size: 14px;" "color: grey;")
 
-        # Keep references to animations
-        self.animations = []
+        self.instruction_label.setStyleSheet("font-size: 20px;" "color: white;")
 
-        # First call
-        self.show_magic_word()
+        self.maximum_attempts_label.setStyleSheet("font-size: 17px;"  "color: grey;")
 
-        self.label.setStyleSheet("font-size: 25px; color: grey; font-family: sans-serif;")
+        self.attempts_so_far_label.setStyleSheet("font-size: 17px;"  "color: grey;")
 
-        self.button1.setGeometry(150, 450, 170, 70)
-        self.button2.setGeometry(500, 450, 170, 70)
-        self.button1.setStyleSheet("""
-            QPushButton {
-                font-size: 30px;
-                background-color: hsl(180, 38%, 17%);
-                color: white;
-                border-radius: 15px;
-            }
-            QPushButton:hover {
-                background-color: hsl(180, 38%, 19%);                
-            }
-        """)
-        self.button2.setStyleSheet("""
-                    QPushButton {
-                        font-size: 30px;
-                        background-color: hsl(180, 38%, 40%);
-                        color: white;
-                        border-radius: 15px;
-                    }
-                    QPushButton:hover {
-                        background-color: hsl(180, 38%, 45%);                
-                    }
-                """)
+        self.remaining_attempts_label.setStyleSheet("font-size: 17px;"  "color: grey;")
+        self.maximum_attempts_button.setStyleSheet("font-size: 20px;"   "color: grey;")
+        self.remaining_attempts_button.setStyleSheet("font-size: 20px;"  "color: grey;")
+        self.attempts_so_far_button.setStyleSheet("font-size: 20px;" "color: grey;")
 
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.time_label)
-        self.setLayout(vbox)
-        self.time_label.setAlignment(Qt.AlignCenter | Qt.AlignBottom)
-        self.time_label.setGeometry(260, 560, 300, 50)
-        self.time_label.setStyleSheet("color: grey;"
-                                      "font-size: 45px;"
-                                      )
-
-        self.button1.clicked.connect(self.on_click1)
-        self.button2.clicked.connect(self.close_program)
-
-
-        font_id = QFontDatabase.addApplicationFont("DS-DIGIT.TTF")
-        font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
-        my_font = QFont(font_family, 150)
-        self.time_label.setFont(my_font)
-
-        self.timer1.timeout.connect(self.update_time)
-        self.timer1.start(1000)
-        self.update_time()
-
-
-    def show_magic_word(self):
-        word = random.choice(self.words)
-        self.label1.setText(word)
-        # Random color
-        color = random.choice(["white", "yellow"]
-)
-        self.label1.setStyleSheet(f"color: {color};"
-                                  "font-size: 40px;")
-
-        # Fade animation
-        opacity_effect = QGraphicsOpacityEffect()
-        self.label1.setGraphicsEffect(opacity_effect)
-        fade = QPropertyAnimation(opacity_effect, b"opacity")
-        fade.setDuration(25000)
-        fade.setStartValue(0)
-        fade.setKeyValueAt(0.5, 1)
-        fade.setEndValue(0)
-        fade.start()
-
-        # Slide animation
-        slide = QPropertyAnimation(self.label1, b"pos")
-        slide.setDuration(30000)
-        slide.setEasingCurve(QEasingCurve.OutCubic)
-
-        current_pos = self.label1.pos()
-        width = self.width()
-        y = current_pos.y()
-
-        # Randomly decide: edge → center OR center → edge
-        if random.choice([True, False]):
-            # From edge → center
-            if random.choice([True, False]):
-                start = QPoint(-50, y) # from left
-                end = QPoint(850, y)
-            else:
-                start = QPoint(800, y)  # from right
-                end = QPoint(0, y)
-        else:
-            # From center → edge
-            start = QPoint(250, y)
-            if random.choice([True, False]):
-                end = QPoint(1000, y)
-            else:
-                end = QPoint(0, y)
-
-        slide.setStartValue(start)
-        slide.setEndValue(end)
-        slide.start()
-
-        # Keep reference to avoid garbage collection
-        self.animations = [fade, slide]
-
-    def update_time(self):
-        current_time = QTime.currentTime().toString("hh:mm:ss AP")
-        self.time_label.setText(current_time)
-
-    def on_click1(self):
-        self.button1.setGeometry(150, 350, 500, 80)
-        self.button1.setText("Loading..... please wait")
-        self.label.setText("")
-        self.button2.hide()
-        self.lineEdit.hide()
-
-        QTimer.singleShot(1500, self.start_questions)
-
-    def close_program(self):
-        self.label.setText("Goodbye 👋")
-        self.label.setGeometry(250, 220, 500, 250)
-        self.label.setStyleSheet("font-size: 50px; color: lightgreen; font-family: sans-serif;")
-        self.button1.hide()
-        self.button2.hide()
-        self.lineEdit.hide()
-        self.time_label.hide()
-        QTimer.singleShot(2000, self.close)  # close after 3 sec
-
-    def start_questions(self):
-        self.question_index = 0
-        self.show_question()
-
-    def show_question(self):
-        self.button2.hide()
-        question = self.questions[self.question_index]
-        self.label.setGeometry(150, 100, 1000, 100)
-        self.label.setStyleSheet("font-size: 30px; color: lightgreen; font-weight: bold;")
-        self.label.setText(question["q"])
-
-        self.lineEdit.clear()
-        self.lineEdit.setPlaceholderText(question["placeholder"])
-        self.lineEdit.setGeometry(220, 250, 300, 50)
+        self.lineEdit.setGeometry(210, 70, 250, 40)
+        self.lineEdit.setPlaceholderText("Type your number here (1 - 100)")
         self.lineEdit.setStyleSheet(
-            "font-size: 25px; background-color: hsl(180, 38%, 47%); color: white;"
-        )
+            "font-size:16px;"  "background-color: grey;"   "border-radius: 1px;" "font-family:sans-serif;"
+            )
 
-        self.lineEdit.show()
-        self.button1.show()
-        self.button1.setText("Submit")
-        self.button1.setGeometry(270, 380, 200, 70)
-        self.button1.setStyleSheet("""
-            QPushButton {
-                background-color: hsl(180, 38%, 17%);
-                border-radius: 15px;
-                color: white;
-                font-size: 30px;
-            }
-            QPushButton:hover {
-                background-color: hsl(180, 38%, 20%);                
-            }
-        """)
+        self.button1.setGeometry(95, 365, 90, 190)
+        self.button2.setGeometry(275, 365, 90, 190)
+        self.button3.setGeometry(455, 365, 90, 190)
+        self.button4.setGeometry(95, 590, 90, 190)
+        self.button5.setGeometry(275, 590, 90, 190)
+        self.button6.setGeometry(455, 590, 90, 190)
+        self.record_button.setGeometry(275, 130, 110, 40)
 
+        self.button1.setObjectName("button1")
+        self.button2.setObjectName("button2")
+        self.button3.setObjectName("button3")
+        self.button4.setObjectName("button4")
+        self.button5.setObjectName("button5")
+        self.button6.setObjectName("button6")
+        self.record_button.setObjectName("record_button")
+
+        self.setStyleSheet("""QMainWindow {
+
+                               background-color: hsl(0, 0%, 25%);
+                                 }
+                               QPushButton {
+                               font-size: 50px; font-family: arial; border: 2px solid; border-radius: 8px;
+                               }
+                             QPushButton#button1 {
+                                   background-color: hsl(240, 50%, 34%);
+                                   }
+                             QPushButton#button2 {
+                                   background-color: hsl(300, 50%, 34%);
+                                   }
+                             QPushButton#button3 {
+                                   background-color: hsl(0, 50%, 25%);  
+                                   }
+                             QPushButton#button4 {
+                                   background-color: hsl(120, 50%, 25%);   
+                                   }
+                             QPushButton#button5 {
+                                   background-color: hsl(40, 50%, 25%);  
+                                   }
+                             QPushButton#button6 {
+                                   background-color: hsl(270, 50%, 25%);  
+                                   }
+                             QPushButton#record_button{
+                                   background-color: hsl(180, 38%, 17%);  font-size: 16px; border-style: solid; border-radius: 10px;
+                                   color: white;
+                                   }       
+
+                             QPushButton#button1:hover {
+                                   background-color: hsl(240, 50%, 38%);
+                                   }
+
+                             QPushButton#button2:hover {
+                                   background-color: hsl(300, 50%, 38%);
+                                   }
+                             QPushButton#button3:hover {
+                                   background-color: hsl(0, 50%, 30%);
+                                   }
+                             QPushButton#button4:hover {
+                                   background-color: hsl(120, 50%, 28%);
+                                   }
+                             QPushButton#button5:hover {
+                                   background-color: hsl(40, 50%, 30%);
+                                   }
+                             QPushButton#button6:hover {
+                                   background-color: hsl(270, 50%, 30%);
+                                   } 
+                             QPushButton#record_button:hover {
+                                   background-color: hsl(180, 38%, 20%);
+                                   }                    
+                             }
+                               """)
+        # initial state
+        self.maximum_attempts = 0
+        self.attempts_used = 0
+        self.remaining_attempts = 0
+        self.automation_timer = QTimer(self)
+        self.automation_timer.timeout.connect(self.automatic_click)
+
+        # connect main navigation safely (disconnect first)
         try:
-            self.button1.clicked.disconnect()
+            self.proceed_button.clicked.disconnect()
         except Exception:
             pass
-        self.button1.clicked.connect(self.validate_answer)
+        self.proceed_button.clicked.connect(self.safe_instructions)
 
-    def validate_answer(self):
-        user_input = self.lineEdit.text().strip().lower()
-        correct_answers = self.questions[self.question_index]["answers"]
+        try:
+            self.cancel_button.clicked.disconnect()
+        except Exception:
+            pass
+        self.cancel_button.clicked.connect(self.cancel_stage)
+        self.entry_passkey_layout()
+        # ---------- safe wrappers that catch exceptions ----------
 
-        if user_input in correct_answers:
-            self.score += 1
-            msg = random.choice(self.punchlines)
-            self.label.setText(msg)
-            self.label.setGeometry(150, 120, 1000, 380)
-            self.label.setStyleSheet("font-size: 35px; color: lightgreen; font-weight: bold;")
-            self.lineEdit.hide()
-            self.button1.hide()
-            QTimer.singleShot(2500, self.advance_or_finish)
-        else:
+    def safe_instructions(self):
+        try:
+            self.allow_button.clicked.disconnect()
 
-            if user_input == "":
-                self.label.setText("You did not write anything.")
+        except Exception:
+            pass
+        self.instructions()
 
+    def safe_mode_selection(self):
+        try:
+            self.arranging_mechanics()
+
+        except Exception:
+            pass
+
+    def entry_passkey_layout(self):
+        self.line_edit1_label.hide()
+        self.line_edit2_label.hide()
+        self.proceed_button.hide()
+        self.cancel_button.hide()
+        self.allow_button.hide()
+        self.intro_label.hide()
+        self.automatic_button.hide()
+        self.confirm_button.hide()
+        self.no_button.hide()
+        self.cancel_button.hide()
+        self.home_layout_label.show()
+        self.sign_in_layout_button.hide()
+        self.sign_out_layout_button.show()
+        self.line_edit1_label.show()
+        self.line_edit2_label.show()
+        self.proceed_button.hide()
+        self.cancel_button.hide()
+        self.allow_button.show()
+        self.intro_label.hide()
+        credentials = [self.credentials_label, self.line_edit1, self.line_edit2]
+        for field in credentials:
+            field.show()
+        self.credentials_label.setText("Sign in:")
+        self.credentials_label.setStyleSheet("font-size: 24px;"
+                                             "color: grey;")
+        self.line_edit1.setPlaceholderText("Enter your name here")
+        self.line_edit1.setStyleSheet("font-size: 16px;"
+                                      "color: black;"
+                                      "background-color: white;")
+
+        self.line_edit2.setPlaceholderText("Enter your password here")
+        self.line_edit2.setStyleSheet("font-size: 16px;"
+                                      "color: black;"
+                                      "background-color: white;")
+
+        self.allow_button.setText("Sign in")
+        self.home_layout_label.setText("Sign in to your account\n to continue.")
+
+        self.allow_button.setStyleSheet("font-size: 22px;"
+                                        "color: white;"
+                                        "background-color: #008fcc;")
+        self.line_edit1_label.setStyleSheet("font-size: 17px;"
+                                            "color: white;")
+        self.line_edit2_label.setStyleSheet("font-size: 17px;"
+                                            "color: white;")
+        self.home_layout_label.setGeometry(150, 20, 800, 80)
+        self.home_layout_label.setText("Sign in to your account\n to continue.")
+        self.home_layout_label.setStyleSheet("font-size: 35px;" "color: grey;")
+        self.sign_in_layout_button.setStyleSheet("font-size: 25px;"
+                                                 "Background-color: #008fcc;"
+                                                 "color: white")
+        self.sign_out_layout_button.setStyleSheet("font-size: 25px;"
+                                                  "Background-color: grey;"
+                                                  "color: white")
+        self.sign_out_layout_button.setText("Cancel")
+
+        self.credentials_label.setGeometry(280, 120, 400, 40)
+        self.sign_out_layout_button.setGeometry(380, 450, 120, 50)
+        self.line_edit1.setGeometry(140, 200, 400, 40)
+        self.line_edit2.setGeometry(140, 300, 400, 40)
+        self.allow_button.setGeometry(160, 450, 120, 50)
+        self.line_edit1_label.setGeometry(140, 170, 110, 30)
+        self.line_edit2_label.setGeometry(140, 270, 110, 30)
+        try:
+            self.allow_button.clicked.disconnect()
+        except Exception:
+            pass
+        self.allow_button.clicked.connect(self.verifier)
+        try:
+            self.sign_out_layout_button.clicked.disconnect()
+        except Exception:
+            pass
+        self.sign_out_layout_button.clicked.connect(self.exit_game2)
+
+    def verifier(self):
+        name = self.line_edit1.text().strip()
+        password = self.line_edit2.text().strip()
+        # List of fields and their labels
+        fields = [
+            (self.line_edit1, self.line_edit1_label, name, "Name is required"),
+            (self.line_edit2, self.line_edit2_label, password, "Password is required"),
+        ]
+        # Track if everything is valid
+        all_valid = True
+
+        for field, label, value, message in fields:
+            if value == "":
+                label.setStyleSheet("color: red;")
+                label.setText(message)
+                self.shaking(field)
+                all_valid = False
             else:
-                self.label.setText("Incorrect. Try again.")
+                pass
 
-            self.label.setStyleSheet("font-size: 30px; color: red; font-weight: bold;")
-            self.label.setGeometry(200, 80, 650, 80)
-
-            # 🔔 start blink animation
-            self.blink_state = True
-            self.blink_count = 0
-            self.blink_timer = QTimer()
-            self.blink_timer.timeout.connect(self.toggle_blink)
-            self.blink_timer.start(1400)
-
-            # blink speed
-            self.shake_input()
-
-            # ⏳ Re-show the same question after 2 seconds
-            QTimer.singleShot(3500, self.show_question)
-
-    def toggle_blink(self):
-         #blink only up to 4 full cycles
-        if self.blink_count >= 2:
-            self.blink_timer.stop()
-            self.label.setText("")
-            self.label.setStyleSheet("font-size: 35px; color: lightgreen; font-weight: bold;")
-            QTimer.singleShot(0, self.show_question)
-
-            return
+        if all_valid:
+            self.intro()
 
 
-        if self.blink_state:
-            self.label.setStyleSheet("font-size: 30px; color: red; font-weight: bold;")
-            QApplication.beep()  # 🔔 play system beep
-        else:
-            self.label.setStyleSheet("font-size: 30px; color: transparent; font-weight: bold;")
-        self.blink_state = not self.blink_state
-        self.blink_count += 1
 
-    def shake_input(self):
-        from PyQt5.QtCore import QPropertyAnimation
-        rect = self.lineEdit.geometry()
-        self.anim = QPropertyAnimation(self.lineEdit, b"geometry")
-        self.anim.setDuration(500)
-        self.anim.setLoopCount(2)
-        self.anim.setKeyValueAt(0, rect)
-        self.anim.setKeyValueAt(0.25, rect.translated(-10, 0))
-        self.anim.setKeyValueAt(0.5, rect.translated(10, 0))
-        self.anim.setKeyValueAt(0.75, rect.translated(-10, 0))
-        self.anim.setKeyValueAt(1, rect)
-        self.anim.start()
-        # 🔴 Add red border flash effect
-        self.lineEdit.setStyleSheet(
-            "font-size: 25px; background-color: hsl(180, 38%, 47%); "
-            "color: white; border: 3px solid red; border-radius: 5px;"
-        )
+    def intro(self):
+        self.home_layout_label.hide()
+        self.sign_in_layout_button.hide()
+        self.sign_out_layout_button.hide()
+        self.automatic_button.hide()
+        self.confirm_button.hide()
+        self.no_button.hide()
+        self.proceed_button.show()
+        self.cancel_button.show()
+        self.intro_label.show()
+        self.line_edit1.hide()
+        self.line_edit2.hide()
+        self.credentials_label.hide()
+        self.allow_button.hide()
+        self.line_edit1_label.hide()
+        self.line_edit2_label.hide()
+        self.creator_label.setGeometry(520, 810, 150, 30)
+        self.intro_label.setGeometry(40, 40, 800, 300)
+        self.intro_label.setStyleSheet("font-size: 28px;" "color: grey;")
+
+        self.intro_label.setText("Welcome to a game powered by probability,\nprecision, and pure machine intelligence."
+                                 " Every\nmatch reveals a pattern."
+                                 " You are about to enter\na live environment where results are recorded in\nreal time."
+                                 " Click 'Proceed' to read instructions on\nhow to play or 'Cancel' to exit game.")
+        self.hide_staffs()
+        self.proceed_button.clicked.connect(self.clicking)
+
+    def clicking(self):
+        try:
+            self.allow_button.clicked.disconnect()
+        except:
+            pass
+        self.allow_button.clicked.connect(self.safe_instructions)
 
 
-    def advance_or_finish(self):
-        if self.question_index < len(self.questions) - 1:
-            self.question_index += 1
-            self.show_question()
-        else:
-            self.show_result()
+    def shaking(self, widget):
+        ### 1️⃣ SHAKE EFFECT
+        rect = widget.geometry()
+        animation = QPropertyAnimation(widget, b"geometry")
+        animation.setDuration(400)
+        animation.setLoopCount(1)
+        animation.setKeyValueAt(0, rect)
+        animation.setKeyValueAt(0.25, rect.translated(-5, 0))
+        animation.setKeyValueAt(0.5, rect.translated(5, 0))
+        animation.setKeyValueAt(0.75, rect.translated(-5, 0))
+        animation.setKeyValueAt(1, rect)
+        animation.start()
+        # ✅ Keep reference alive
+        if not hasattr(self, 'animations'):
+            self.animations = []
+        self.animations.append(animation)
 
-    def show_result(self):
-        self.label.setGeometry(100, 240, 800, 150)
-        if self.score == len(self.questions):
-            msg = f"Perfect! 🎉 You scored {self.score}/{len(self.questions)}\n{random.choice(self.punchlines)}"
-        else:
-            msg = f"Finished! ✅ You scored {self.score}/{len(self.questions)}"
-        self.label.setText(msg)
+    def instructions(self):
+        self.credentials_label.hide()
+        self.allow_button.hide()
+        self.line_edit1_label.hide()
+        self.line_edit2_label.hide()
+        self.line_edit1.hide()
+        self.line_edit2.hide()
+        self.intro_label.show()
+        self.proceed_button.show()
+        self.cancel_button.show()
+        self.intro_label.setStyleSheet("font-size: 20px;" "color: grey;")
+
+        self.proceed_button.setText("Okay")
+        self.proceed_button.setGeometry(130, 700, 130, 50)
+        self.cancel_button.setGeometry(410, 700, 130, 50)
+        self.intro_label.setGeometry(50, 25, 800, 660)
+        self.intro_label.setText(
+            "1. You will choose your Mode\n       Manual Mode: You control the card draws one step at a time.\n"
+            "       Automatic Mode: The machine runs rapidly on its own as you\n                                 "
+            "observe.\n\n"
+            "2. Enter Your Attempts\n       This is the total number of rounds the cards will be drawn.\n"
+            "       In Manual Mode, the number you will select is smaller (slower\n       gameplay, full control) while"
+            " in Automatic Mode, the number is\n       larger (fast, machine-driven simulation).\n\n"
+            "3. Card Matching Objective\n       Each round, six cards will display random numbers."
+            " You are\n       trying to get matching numbers across multiple cards in the\n       same round."
+            " Each successful match increases your score.\n\n"
+            "4. Winning Logic\n      The more matches you get before attempts run out, the higher\n      your success rate."
+            " In Automatic Mode, results appear rapidly,\n      and statistics update in real time.\n\n"
+            "5. Stay Sharp\n      The game is based on probability and streaks."
+            " Matching patterns\n      may appear suddenly—especially during fast automatic mode!\n\n"
+            "6. Your Goal\n      Observe how randomness behaves.")
+
+        # connect proceed to mode selection safely
+        try:
+            self.proceed_button.clicked.disconnect()
+        except Exception:
+            pass
+        self.proceed_button.clicked.connect(self.safe_mode_selection)
+
+        # ensure cancel goes to cancel_stage
+        try:
+            self.cancel_button.clicked.disconnect()
+        except Exception:
+            pass
+        self.cancel_button.clicked.connect(self.cancel_stage)
+
+
+    def arranging_mechanics(self):
+        try:
+            self.automatic_button.clicked.disconnect()
+        except Exception:
+            pass
+        self.hide_staffs()
+        self.automatic_button.hide()
+        self.proceed_button.hide()
+        self.cancel_button.hide()
+        self.check1.hide()
+        self.check2.hide()
+        self.check3.hide()
+        self.check1.setGeometry(180, 260, 800, 46)
+        self.check2.setGeometry(180, 300, 800, 44)
+        self.check3.setGeometry(180, 340, 800, 46)
+        self.intro_label.setText("Arranging Game Mechanics")
+        self.intro_label.setGeometry(150, 200, 700, 50)
+        self.intro_label.setStyleSheet("color: orange;"
+                                       "font-size: 25px;")
+        self.check1.show(),
+        self.check1.setText("Initializing button responsiveness....."),
+        self.check1.setChecked(False),
+        QTimer.singleShot(3000, lambda: self.check1.setChecked(False))
+
+        QTimer.singleShot(8000, lambda: (
+            self.check2.show(),
+            self.check2.setText("Checking game engine configurations...."),
+            self.check2.setChecked(False),
+            QTimer.singleShot(3000, lambda: self.check2.setChecked(True))
+        ))
+
+        QTimer.singleShot(12000, lambda: (
+            self.check3.show(),
+            self.check3.setText("Initializing scores before game time..."),
+            self.check3.setChecked(False),
+            QTimer.singleShot(2000, lambda: self.check3.setChecked(False))
+
+        ))
+        try:
+            self.record_button.clicked.disconnect()
+        except Exception:
+            pass
+        QTimer.singleShot(15000, self.automatic_mode_layout)
+
+
+    def automatic_mode_layout(self):
+        try:
+            self.record_button.clicked.disconnect()
+        except:
+            pass
+        self.check1.hide()
+        self.check2.hide()
+        self.check3.hide()
+        self.total_users_button.show()
+        self.total_users_label.show()
+        self.total_amount_button.show()
+        self.total_amount_label.show()
+        self.amount_cashed_out_label.show()
+        self.amount_cashed_out_button.show()
+        self.users_remaining_button.show()
+        self.users_remaining_label.show()
+        self.developers_wallet_button.show()
+        self.developers_wallet_label.show()
+        self.rating_button.show()
+        self.rating_label.show()
+        self.prize_label.show()
+        self.prize_button.show()
+        self.num_of_matched_labelL.show()
+        self.num_of_matched_buttonsL.show()
+        self.num_of_matched_label.show()
+        self.all_matched_label.show()
+        self.all_matched_button.show()
+        self.num_of_matched_buttons.show()
+        self.num_of_matched_buttons.setText("0")
+        self.num_of_matched_buttonsL.setText("0")
+        self.all_matched_button.setText("0")
+        self.prize_label.setText("Prize:")
+
+        self.rating_label.setText("Status:")
+        self.num_of_matched_labelL.setText("Lower matched(L):")
+        self.num_of_matched_label.setText("Upper matched(U):")
+        self.all_matched_label.setText("All numbers matched:")
+        self.developers_wallet_label.setText("Dev. Balance(Ksh):")
+        self.developers_wallet_button.setText("0.00")
+        self.total_amount_label.setText("Total Amount(Ksh):")
+        self.total_users_label.setText("Total Users:")
+        self.users_remaining_label.setText("Active Users:")
+        self.amount_cashed_out_label.setText("Amount Cashed Out:")
+
+        self.intro_label.hide()
+        self.total_users_label.setGeometry(470, 80, 150, 30)
+        self.total_users_button.setGeometry(470, 110, 80, 25)
+
+        self.users_remaining_label.setGeometry(570, 80, 150, 30)
+        self.users_remaining_button.setGeometry(570, 110, 80, 25)
+        self.developers_wallet_button.setGeometry(520, 40, 150, 30)
+        self.developers_wallet_label.setGeometry(520, 0, 150, 50)
+        self.total_amount_button.setGeometry(10, 50, 150, 30)
+        self.total_amount_label.setGeometry(10, 10, 150, 50)
+
+        self.amount_cashed_out_button.setGeometry(10, 130, 150, 30)
+        self.amount_cashed_out_label.setGeometry(10, 100, 150, 30)
+
+        self.prize_label.setGeometry(225, 290, 100, 30)
+        self.prize_button.setGeometry(300, 298, 125, 23)
+        self.rating_label.setGeometry(5, 290, 100, 30)
+        self.rating_button.setGeometry(90, 298, 125, 23)
+        self.num_of_matched_labelL.setGeometry(500, 210, 165, 42)
+        self.num_of_matched_buttonsL.setGeometry(540, 250, 55, 27)
+        self.num_of_matched_label.setGeometry(500, 140, 165, 42)
+        self.num_of_matched_buttons.setGeometry(540, 180, 55, 27)
+        self.all_matched_button.setGeometry(540, 320, 55, 27)
+        self.all_matched_label.setGeometry(500, 280, 165, 42)
+
+        self.prize_button.setText("0.00")
+
+        self.developers_wallet_button.setStyleSheet("background-color: white;"
+                                                    "font-size: 22px;"
+                                                    "color: black;"
+                                                    "border-radius: 10px;")
+        self.developers_wallet_label.setStyleSheet("font-size: 16px;"
+                                                   "color: green;")
+        self.total_amount_button.setStyleSheet("background-color: white;"
+                                               "font-size: 22px;"
+                                               "color: black;"
+                                               "border-radius: 10px;")
+        self.total_amount_label.setStyleSheet("font-size: 16px;"
+                                              "color: green;")
+        self.amount_cashed_out_button.setStyleSheet("background-color: white;"
+                                                    "font-size: 22px;"
+                                                    "color: black;"
+                                                    "border-radius: 10px;")
+        self.amount_cashed_out_label.setStyleSheet("font-size: 16px;"
+                                                   "color: green;")
+
+        self.total_users_button.setStyleSheet("background-color: white;"
+                                              "font-size: 22px;"
+                                              "color: black;"
+                                              "border-radius: 10px;")
+        self.total_users_label.setStyleSheet("font-size: 16px;"
+                                             "color: green;")
+        self.users_remaining_button.setStyleSheet("background-color: white;"
+                                                  "font-size: 22px;"
+                                                  "color: black;"
+                                                  "border-radius: 10px;")
+        self.users_remaining_label.setStyleSheet("font-size: 16px;"
+                                                 "color: green;")
+
+        self.prize_button.setStyleSheet("background-color: white;"
+                                        "font-size: 22px;")
+        self.prize_label.setStyleSheet("font-size: 22px;"
+                                       "color: green;")
+        self.rating_button.setStyleSheet("background-color: white;")
+
+        self.rating_label.setStyleSheet("font-size: 22px;"
+                                        "color: green;")
+
+        self.num_of_matched_label.setStyleSheet("font-size: 17px;"
+                                                "color: green;")
+
+        self.num_of_matched_buttons.setStyleSheet("background-color: orange;"
+                                                  "font-size: 19px;"
+                                                  "color: black;")
+        self.num_of_matched_labelL.setStyleSheet("font-size: 17px;"
+                                                 "color: green;")
+        self.num_of_matched_buttonsL.setStyleSheet("background-color: orange;"
+                                                   "font-size: 19px;"
+                                                   "color: black;")
+        self.all_matched_label.setStyleSheet("font-size: 17px;"
+                                             "color: green;")
+        self.all_matched_button.setStyleSheet("background-color: orange;"
+                                              "font-size: 19px;"
+                                              "color: black;")
+
+        self.automatic_mode_label.show()
+        self.automatic_button.hide()
+        self.show_staffs()
         self.lineEdit.hide()
-        self.button1.hide()
-        self.time_label.hide()
+        self.instruction_label.setText("Click 'Connect' to get into Game")
+        self.record_button.setText("Connect")
+        self.record_button.setStyleSheet("font-size: 22px;")
+        self.automatic_mode_label.setText("Automatic Mode")
+        self.automatic_mode_label.setGeometry(300, 0, 100, 30)
+        self.automatic_mode_label.setStyleSheet("color: orange;")
+        self.maximum_attempts_label.setText("Machine\nAttempts:")
 
-    def home_page(self):
-        self.show_question()
+        try:
+            self.record_button.clicked.disconnect()
+        except:
+            pass
+        self.record_button.clicked.connect(self.machine_attempts_picking)
+
+    def machine_attempts_picking(self):
+        self.instruction_label.show()
+        self.instruction_label.setText("Please wait......")
+        self.record_button.hide()
+        self.instruction_label.setGeometry(200, 20, 700, 40)
+        self.instruction_label.setStyleSheet("font-size: 24px;"
+                                             "color: orange;")
+
+        robot_number = random.randint(50000, 85000)
+        robot_str = str(robot_number)
+        length = len(robot_str)
+        self.maximum_attempts = robot_number
+        self.remaining_attempts = robot_number
+        self.attempts_used = 0
+        amount = random.choice([400, 500, 1000, 2000, 4000, 5000, 10000])
+        players = random.choice([800, 1000, 2000, 3000])
+        tot_amount = amount * players
+
+        QTimer.singleShot(2500, lambda: (
+            self.total_users_button.setText(str(f"{players:,.0f}")),
+            self.total_amount_button.setText(str(f"{tot_amount:,.0f}")),
+
+            self.update_automated_attempts_display(),
+            self.instruction_label.setStyleSheet("font-size: 24px;"
+                                                 "color: orange;"),
+            QTimer.singleShot(0, self.start_automatic_prep)
+
+        ))
+        try:
+            self.record_button.clicked.disconnect()
+        except:
+            pass
+
+    def start_automatic_prep(self):
+        self.loading_button.show()
+        self.loading_button1.show()
+        self.loading_button1.setGeometry(235, 110, 110, 20)
+        self.loading_button.setGeometry(320, 110, 120, 20)
+
+        self.loading_button1.setStyleSheet("background-color: black;"
+                                           "border-radius: 10px;"
+                                           )
+
+        self.loading_button.setStyleSheet("background-color: black;"
+                                          "border-radius: 10px;")
+        QTimer.singleShot(2000, lambda: (
+            self.loading_button1.setStyleSheet("background-color: red;"),
+        ))
+        QTimer.singleShot(4000, lambda: (
+            self.loading_button.hide(),
+            self.loading_button1.setGeometry(235, 110, 205, 20),
+            self.loading_button1.setStyleSheet("background-color: red;"),
+        ))
+
+        self.instruction_label.setText("Waiting for next round....")
+        self.instruction_label.setStyleSheet("font-size: 24px;"
+                                             "color: red;")
+        self.record_button.hide()
+        QTimer.singleShot(7000, lambda: (QTimer.singleShot(0, self.start_automation)))
+
+    def start_automation(self):
+        self.automation_timer.start(1)
+
+    def automatic_click(self):
+        self.instruction_label.setGeometry(180, 20, 700, 50)
+        self.instruction_label.setStyleSheet("color: white;"
+                                             "font-size: 25px;")
+        self.instruction_label.setText("Automation in progress....")
+        random_codes = ["1", "2", "3", "4", "5", "6"]
+        cards = [self.button1, self.button2, self.button3, self.button4, self.button5, self.button6]
+        for card in cards:
+            card.setText(random.choice(random_codes))
+
+        # Deduct an attempt
+        if self.remaining_attempts > 0:
+            self.attempts_used += 1
+            self.remaining_attempts -= 1
+            self.update_automated_attempts_display()
+            self.natural_liquidation()
+            self.prize_determinant()
+            self.prize_layout_display()
+            self.update_user_card()
+            self.loading_button1.hide()
+
+        elif self.remaining_attempts == 0:
+            self.automation_timer.stop()
+            dd = int(self.users_remaining_button.text().replace(" ", "").strip())
+            print(f"{dd} did not manage to cash out🥶🥶.")
+            self.instruction_label.setText("Automation Complete")
+            self.final_wallet_update()
+            self.instruction_label.setStyleSheet("color: white; font-size: 32px;")
+            QTimer.singleShot(3000, self.reset)
+
+    def final_wallet_update(self):
+        try:
+            total_amount = float(self.total_amount_button.text().replace(",", "").strip() or 0)
+            amount_cashed_out = float(self.amount_cashed_out_button.text().replace(",", "").strip() or 0)
+            dev_balance = float(self.developers_wallet_button.text().replace(",", "").strip() or 0)
+            dev_money = (total_amount - amount_cashed_out) + dev_balance
+
+            # Update only if something was cashed out
+            if amount_cashed_out > 0:
+                self.developers_wallet_button.setText(f"{dev_money:,.0f}")
+
+        except Exception as e:
+            print("final_wallet_update error:", e)
+
+
+    def update_user_card(self):
+        number1 = self.button1.text().strip()
+        number2 = self.button2.text().strip()
+        number3 = self.button3.text().strip()
+        number4 = self.button4.text().strip()
+        number5 = self.button5.text().strip()
+        number6 = self.button6.text().strip()
+        if number1 == number2 == number3:
+            self.matched_buttons += 1
+            self.num_of_matched_buttons.setText(str(self.matched_buttons))
+
+        if number4 == number5 == number6:
+            self.matched_buttonsL += 1
+            self.num_of_matched_buttonsL.setText(str(self.matched_buttonsL))
+
+        if number1 == number2 == number3 == number4 == number5 == number6:
+            self.all_matched += 1
+            self.all_matched_button.setText(str(self.all_matched))
+            self.pause2()
+
+    def natural_liquidation(self):
+        dd = float(self.total_amount_button.text().replace(",", "").strip() or 0)
+        deduct = float(self.amount_cashed_out_button.text().replace(",", "").strip() or 0)
+        init = float(self.developers_wallet_button.text().replace(",", "").strip() or 0)
+        addition = dd + init
+        add = init + (dd - deduct)
+        try:
+            prize_value = float(self.prize_button.text().strip() or 0)
+            all_cards = int(self.all_matched_button.text().strip() or 0)
+            if (prize_value <= -1000 and all_cards <= 2) or (prize_value <= -1800 and all_cards <= 10):
+                ee = int(self.total_users_button.text().replace(",", "").strip() or 0)
+                eee = int(self.users_remaining_button.text().replace(",", "").strip() or 0)
+                self.trigger_liquidation()
+                if eee == 0:
+                    print(f"😶 All {ee} users liquidated 💀💀")
+                if eee != 0:
+                    print(f"😶 Remaining {eee} users liquidated 💀💀")
+                self.developers_wallet_button.setText(f"{addition:,.2f}") if deduct == 0 else self.developers_wallet_button.setText(f"{add:,.2f}")
+
+        except ValueError as e:
+            print(e)
+
+    def amount_display(self):
+        try:
+            total_amount = float(self.total_amount_button.text().replace(",", "").strip() or 0)
+            total_users = int(self.total_users_button.text().replace(",", "").strip() or 0)
+            users_remaining = int(self.users_remaining_button.text().replace(",", "").strip() or 0)
+            prize_value = float(self.prize_button.text().strip() or 0)
+
+            # Avoid division errors
+            if total_users == 0:
+                return
+
+            # Amount per user
+            amount_per_user = total_amount / total_users
+
+            # Users who have cashed out so far
+            users_cashed_so_far = total_users - users_remaining
+
+            # New total cashed = users_cashed * amount_per_user
+            new_total_cashed = users_cashed_so_far * amount_per_user
+
+            if prize_value > 1:
+                self.amount_cashed_out_button.setText(f"{new_total_cashed:,.0f}")
+
+        except Exception as e:
+            print("Status layout error:", e)
+
+
+    def users(self):
+        try:
+            total_users = int(self.total_users_button.text().replace(",", "").strip() or 0)
+            users_remaining = int(self.users_remaining_button.text().replace(",", "").strip() or 0)
+            raw = self.prize_button.text()
+            clean = raw.replace(",", "").replace("++", "").replace("+", "").replace(" ", "").strip()
+            prize_text = float(clean or 0)
+
+            # ✅ Read all 6 card values
+            cards = [
+                self.button1.text().strip(),
+                self.button2.text().strip(),
+                self.button3.text().strip(),
+                self.button4.text().strip(),
+                self.button5.text().strip(),
+                self.button6.text().strip()
+            ]
+
+            # ✅ Initialize users_remaining properly
+            if users_remaining == 0:
+                users_remaining = total_users
+
+            # ✅ Stop when no users left
+            if users_remaining <= 0:
+                print("🚫 All users finished. No more deductions.")
+                return
+
+            # ✅ If all cards = 5 or 6 → no cashout
+            if all(c == "5" for c in cards) or all(c == "6" for c in cards):
+                print("😶 No player cashed out.")
+                return
+
+            # ✅ Pick random users to cash out
+            users_cashed_out = random.randint(1, max(1, users_remaining // 2))
+            remaining_users = max(0, users_remaining - users_cashed_out)
+
+            # ✅ Update UI
+            if prize_text > 0:
+                print(f"💨 {users_cashed_out} users cashed out. {remaining_users} remaining.")
+                self.users_remaining_button.setText(f"{remaining_users:,}")
+
+        except Exception as e:
+            print("Users() error:", e)
+
+
+
+    def prize_determinant(self):
+        try:
+            v1 = int(self.num_of_matched_buttonsL.text().strip() or 0)
+            v2 = int(self.num_of_matched_buttons.text().strip() or 0)
+            x1 = self.button1.text().strip()
+            x2 = self.button2.text().strip()
+            x3 = self.button3.text().strip()
+            x4 = self.button4.text().strip()
+            x5 = self.button5.text().strip()
+            x6 = self.button6.text().strip()
+
+            if x1 == x2 == x3 == x4 == x5 == x6:
+                new_tot = float(self.prize_button.text().replace("+", "").strip() or 0)
+                if x1 == "1":
+                    total = (new_tot + (v1 + (v2 + 1))) * 0.008
+
+                elif x1 == "3":
+                    total = (new_tot + (v1 + (v2 + 1))) * 0.007
+
+                elif x1 == "2":
+                    total = (new_tot + (v1 + (v2 + 1))) * 0.005
+
+                elif x1 == "4":
+                    total = (new_tot + (v1 + (v2 + 1)) + 250) * 0.009
+
+                elif x1 in ["5", "6"]:
+                    total = new_tot - new_tot
+                    self.prize_button.setText(f"{total:.2f}")
+
+                self.prize_button.setText(f"{total:.2f}") if total < 0 else self.prize_button.setText(
+                    f"+{total:.2f}")
+
+            elif ((x1 == x2 == x3) or (x4 == x5 == x6)) and not (x1 == x2 == x3 == x4 == x5 == x6):
+                prize_value = float(self.prize_button.text().strip() or 0)
+                if x1 in ["1", "3"]:
+                    total = prize_value - 3
+
+                elif x1 == "6":
+                    total = prize_value + 1
+
+                elif x1 == "2":
+                    total = prize_value + 0.01
+
+                elif x1 in ["4", "5"]:
+                    total = prize_value  # no change
+
+                # ✅ single place to update the UI
+                #sign = "" if total < 0 else "+"
+                #self.prize_button.setText(f"{sign}{total:.2f}")
+                self.prize_button.setText(f"{total:.2f}") if total < 0 else self.prize_button.setText(
+                    f"+{total:.2f}")
+
+        except:
+            pass
+
+    def reset_r(self):
+        self.rating_button.setText("")
+
+    def trigger_liquidation(self):
+        self.automation_timer.stop()
+        self.instruction_label.setText("Liquidated")
+        self.instruction_label.setGeometry(245, 100, 110, 35)
+        self.instruction_label.setStyleSheet("""
+            background-color: red;
+            font-size: 24px;
+            color: white;
+            border-radius: 10px;
+        """)
+        QTimer.singleShot(3000, self.reset)
+
+    def prize_layout_display(self):
+        try:
+            text = self.prize_button.text().replace("+", "").replace("++", "").strip()
+            xx = float(text)
+
+            if xx < 0:
+                color = "red"
+            elif xx == 0:
+                color = "black"
+            else:
+                color = "blue"
+            self.prize_button.setStyleSheet(f"background-color: white;"
+                                            f"font-size: 22px;"
+                                            f"color: {color};"
+                                            f"border-radius: 10px;"
+                          )
+        except:
+            pass
+
+    def save_file(self):
+            file_path = "data.txt"
+            with open(file_path, "a") as file:
+                for x in range(1):
+                    file_content = self.users_remaining_button.text().strip()
+                    file.write(f"{file_content}\n")
+                print(f"File '{file_path}' has been created and\ncontent appended"
+                               f" successfully😎.\nOpen IDE side bar to view.")
+
+    def read_file(self):
+        file_path = "content.txt"
+        with open(file_path, "r") as file:
+            file_content = f"data.txt{[0][2]}"
+            file.read(f"{file_content}\n")
+        print(f"File '{file_path}' reads {file_content}.")
+
+
+    def reset(self):
+        self.instruction_label.hide()
+
+        def do_reset():
+            self.instruction_label.setGeometry(200, 20, 700, 40)
+            self.instruction_label.setStyleSheet("font-size: 24px;"
+                                                 "color: orange;")
+
+            self.instruction_label.setText("Please wait......")
+            # ✅ Reset internal game variables
+            self.remaining_attempts = 0
+            self.attempts_used = 0
+            self.matched_buttons = 0
+            self.matched_buttonsL = 0
+            self.all_matched = 0
+            self.total_amount = 0
+            self.total_amount_button.setText(str(self.total_amount))
+            self.total_users = 0
+            self.total_users_button.setText(str(self.total_users))
+            self.users_remaining = 0
+            self.users_remaining_button.setText(str(self.users_remaining))
+            self.amount_cashed_out = 0
+            self.amount_cashed_out_button.setText(str(self.amount_cashed_out))
+
+            # ✅ Reset UI values (everything except wallet)
+            self.remaining_attempts_button.setText("0")
+            self.num_of_matched_buttonsL.setText("0")
+            self.num_of_matched_buttons.setText("0")
+            self.all_matched_button.setText("0")
+            self.attempts_so_far_button.setText("0")
+            self.maximum_attempts_button.setText("0")
+
+            self.prize_button.setText("0.00")
+            self.prize_button.setStyleSheet("color: black;"
+                                            "background-color: white;"
+                                            "font-size: 22px;")
+            self.rating_button.setText("")
+
+            # ✅ CARD BUTTONS RESET
+            for btn in [self.button1, self.button2, self.button3, self.button4, self.button5, self.button6]:
+                btn.setText("")
+            QTimer.singleShot(2000, after_reset)
+
+        def after_reset():
+            self.record_button.hide()
+            QTimer.singleShot(1500, self.machine_attempts_picking)
+
+        QTimer.singleShot(3000, do_reset)
+
+    def pause2(self):
+        self.automation_timer.stop()
+        self.instruction_label.setText("Automation paused.")
+        self.instruction_label.setGeometry(230, 80, 700, 50)
+        self.instruction_label.setStyleSheet("color: red;"
+                                             "font-size: 25px;")
+        self.users()
+        self.prize_determinant()
+        self.amount_display()
+        self.save_file()
+        QTimer.singleShot(4500, lambda: (
+            self.automation_timer.start(1),
+            self.reset_r(),
+        ))
+
+    def update_automated_attempts_display(self):
+        self.maximum_attempts_button.setText(str(self.maximum_attempts))
+        self.attempts_so_far_button.setText(str(self.attempts_used))
+        self.remaining_attempts_button.setText(str(self.remaining_attempts))
+        self.num_of_matched_buttons.setText(str(self.matched_buttons))
+        self.num_of_matched_buttonsL.setText(str(self.matched_buttonsL))
+        self.all_matched_button.setText(str(self.all_matched))
+
+    def automation_progress(self):
+        # BLINKING EFFECT
+        self.anim_blink = QPropertyAnimation(self.instruction_label, b"opacity")
+        effect = QGraphicsOpacityEffect(self.instruction_label)
+        self.instruction_label.setGraphicsEffect(effect)
+
+        self.anim_blink.setTargetObject(effect)
+        self.anim_blink.setDuration(1300)  # Total blink cycle duration
+        self.anim_blink.setLoopCount(8)  # Number of blinks
+        self.anim_blink.setStartValue(1.0)  # Fully visible
+        self.anim_blink.setKeyValueAt(0.5, 0.0)  # Fully invisible in the middle
+        self.anim_blink.setEndValue(2.0)  # Back to visible
+        self.anim_blink.start()
+
+    def hide_staffs(self):
+        cards = [self.button1, self.button2, self.button3, self.button4, self.button5, self.button6]
+        for card in cards:
+            card.hide()
+        self.lineEdit.hide()
+        self.label.hide()
+        self.instruction_label.hide()
+        self.record_button.hide()
+        attempt_buttons = [self.maximum_attempts_button, self.remaining_attempts_button, self.attempts_so_far_button]
+        for attempt_button in attempt_buttons:
+            attempt_button.hide()
+        attempt_labels = [self.maximum_attempts_label, self.remaining_attempts_label, self.attempts_so_far_label]
+        for attempt_label in attempt_labels:
+            attempt_label.hide()
+
+    def show_staffs(self):
+        cards = [self.button1, self.button2, self.button3, self.button4, self.button5, self.button6]
+        for card in cards:
+            card.show()
+        self.lineEdit.show()
+        self.label.show()
+        self.instruction_label.show()
+        self.record_button.show()
+        attempt_buttons = [self.maximum_attempts_button, self.remaining_attempts_button,
+                           self.attempts_so_far_button]
+        for attempt_button in attempt_buttons:
+            attempt_button.show()
+        attempt_labels = [self.maximum_attempts_label, self.remaining_attempts_label, self.attempts_so_far_label]
+        for attempt_label in attempt_labels:
+            attempt_label.show()
+
+
+
+    def update_attempts_display(self):
+        self.maximum_attempts_button.setText(str(self.maximum_attempts))
+        self.attempts_so_far_button.setText(str(self.attempts_used))
+        self.remaining_attempts_button.setText(str(self.remaining_attempts))
+        self.num_of_matched_buttons.setText(str(self.matched_buttons))
+
+    def brain(self):
+        self.label.hide()
+        self.instruction_label.show()
+        random_codes = ["1", "2", "3", "4", "5", "6"]
+        cards = [self.button1, self.button2, self.button3, self.button4, self.button5, self.button6]
+        for card in cards:
+            card.setText(random.choice(random_codes))
+        self.decrement_attempts()
+
+    def shaking_effect(self):
+        ### 1️⃣ SHAKE EFFECT
+        rect = self.lineEdit.geometry()
+        self.anim_shake = QPropertyAnimation(self.lineEdit, b"geometry")
+        self.anim_shake.setDuration(400)
+        self.anim_shake.setLoopCount(1)
+        self.anim_shake.setKeyValueAt(0, rect)
+        self.anim_shake.setKeyValueAt(0.25, rect.translated(-5, 0))
+        self.anim_shake.setKeyValueAt(0.5, rect.translated(5, 0))
+        self.anim_shake.setKeyValueAt(0.75, rect.translated(-5, 0))
+        self.anim_shake.setKeyValueAt(1, rect)
+        self.anim_shake.start()
+
+    def shaking_effect2(self):
+        ### 1️⃣ SHAKE EFFECT
+        rect = self.label.geometry()
+        self.anim_shake = QPropertyAnimation(self.label, b"geometry")
+        self.anim_shake.setDuration(900)
+        self.anim_shake.setLoopCount(6)
+        self.anim_shake.setKeyValueAt(0, rect)
+        self.anim_shake.setKeyValueAt(0.25, rect.translated(-15, 0))
+        self.anim_shake.setKeyValueAt(0.5, rect.translated(5, 0))
+        self.anim_shake.setKeyValueAt(0.75, rect.translated(-15, 0))
+        self.anim_shake.setKeyValueAt(1, rect)
+        self.anim_shake.start()
+
+    def blinking_effect2(self):
+        # BLINKING EFFECT
+        self.anim_blink = QPropertyAnimation(self.label, b"opacity")
+        effect = QGraphicsOpacityEffect(self.label)
+        self.label.setGraphicsEffect(effect)
+
+        self.anim_blink.setTargetObject(effect)
+        self.anim_blink.setDuration(1300)  # Total blink cycle duration
+        self.anim_blink.setLoopCount(4)  # Number of blinks
+        self.anim_blink.setStartValue(1.0)  # Fully visible
+        self.anim_blink.setKeyValueAt(0.5, 0.0)  # Fully invisible in the middle
+        self.anim_blink.setEndValue(2.0)  # Back to visible
+        self.anim_blink.start()
+
+
+
+
+    def cancel_stage(self):
+        try:
+            self.proceed_button.clicked.disconnect()
+        except Exception:
+            pass
+        try:
+            self.cancel_button.clicked.disconnect()
+        except Exception:
+            pass
+        self.intro_label.hide()
+        self.home_layout_label.hide()
+        self.sign_out_layout_button.hide()
+        self.sign_in_layout_button.hide()
+        entry1_buttons = [self.proceed_button, self.cancel_button]
+        for button in entry1_buttons:
+            button.hide()
+        self.popup = QWidget(self)
+        self.popup.setGeometry(130, 200, 400, 200)
+        self.popup.setStyleSheet("""
+                    background-color: grey;
+                    border-radius: 20px;
+                    border: 2px solid grey;
+                """)
+        self.popup.show()
+
+        # The question label
+        self.popup_label = QLabel("So fast😲? Are you sure\n you want to quit game?", self.popup)
+        self.popup_label.setGeometry(-110, 30, 600, 90)
+        self.popup_label.setStyleSheet("""
+                    color: white;
+                    font-size: 23px;
+                    font-weight: bold;
+                """)
+        self.popup_label.setAlignment(Qt.AlignCenter)
+        self.popup_label.show()
+
+        # "No" button
+        self.no_button = QPushButton("No", self.popup)
+        self.no_button.setGeometry(60, 140, 110, 50)
+        self.no_button.setStyleSheet("""
+                    QPushButton {
+                        background-color: #2ecc71;
+                        color: white;
+                        border-radius: 12px;
+                        font-size: 20px;
+                    }
+                    QPushButton:hover {
+                        background-color: #27ae60;
+                    }
+                """)
+        self.no_button.clicked.connect(self.redirect)
+        self.no_button.show()
+
+        # "Confirm" button
+        self.confirm_button = QPushButton("Confirm", self.popup)
+        self.confirm_button.setGeometry(240, 140, 110, 50)
+        self.confirm_button.setStyleSheet("""
+                    QPushButton {    
+                        background-color: #e74c3c;
+                        color: white;
+                        border-radius: 12px;
+                        font-size: 20px;
+                    }
+                    QPushButton:hover {
+                        background-color: #c0392b;
+                    }
+                """)
+        self.confirm_button.clicked.connect(self.exit_game)
+        self.confirm_button.show()
+
+    def exit_game2(self):
+        self.popup.hide()
+        self.intro_label.setText("")
+        QTimer.singleShot(100, self.close)  # close after 3 sec
+
+    def exit_game(self):
+        self.popup.hide()
+        self.intro_label.show()
+        self.intro_label.setText("That was soo soon😏")
+        self.intro_label.setGeometry(130, 220, 500, 250)
+        self.intro_label.setStyleSheet("font-size: 40px; color: lightgreen; font-family: sans-serif;")
+        QTimer.singleShot(2000, self.close)  # close after 3 sec
+
+    def redirect(self):
+        self.popup.hide()
+        self.intro_label.show()
+        self.intro_label.setGeometry(60, 220, 600, 400)
+        self.intro_label.setText("Wait while the server redirects you.\n\n\n\n           redirecting.....")
+        self.intro_label.setStyleSheet("color: orange;"
+                                       "font-size: 32px;")
+        QTimer.singleShot(3000, self.instructions)
 
 
 def main():
@@ -352,6 +1268,7 @@ def main():
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
+
 
 if __name__ == '__main__':
     main()
