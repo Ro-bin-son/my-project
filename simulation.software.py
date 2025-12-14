@@ -927,13 +927,13 @@ class MainWindow(QMainWindow):
     def get_multipliers(self, total=64):
         # Each range has min, max, and possible count (min_count, max_count)
         range_limits = [
-            {"min": 1.00, "max": 1.99, "min_count": 25, "max_count": 40},
-            {"min": 2.00, "max": 6.99, "min_count": 20, "max_count": 47},
+            {"min": 1.00, "max": 1.99, "min_count": 25, "max_count": 30},
+            {"min": 2.00, "max": 6.99, "min_count": 22, "max_count": 34},
             {"min": 7.00, "max": 9.99, "min_count": 0, "max_count": 5},
             {"min": 10.00, "max": 29.99, "min_count": 0, "max_count": 5},
             {"min": 30.00, "max": 49.99, "min_count": 0, "max_count": 5},
-            {"min": 50.00, "max": 999.99, "min_count": 0, "max_count": 5},
-            {"min": 1000.00, "max": 10000.00, "min_count": 0, "max_count": 3}
+            {"min": 50.00, "max": 99.99, "min_count": 0, "max_count": 5},
+            {"min": 100.00, "max": 10000.00, "min_count": 0, "max_count": 3}
         ]
 
         counts = []
@@ -956,18 +956,6 @@ class MainWindow(QMainWindow):
                 counts[idx] -= 1
                 current_total -= 1
         return counts
-
-    def upper_segment(self):
-        pass
-
-    def lower_segment(self):
-        pass
-
-    def contact_algorithm(self):
-        pass
-
-    def disjoint_algorithm(self):
-        pass
 
     # Analyze flexes using restart scanning logic
     def analyze_with_restart(self, values):
@@ -1015,18 +1003,20 @@ class MainWindow(QMainWindow):
         final = payouts - total_cost
         return final
 
-    def run_simulations(self):
+    def run_simulations(self, starting_wallet=0):
+        raw_wallet = starting_wallet
         vals = self.generate_all_values()
         final = self.analyze_with_restart(vals)
-        wallet = f"{final:,.0f}"
+        raw_wallet += final
+        wallet = f"{raw_wallet:,.0f}"
         return wallet
 
     def generate_all_values(self):
         range_limits = [
-            {"min": 1.00, "max": 1.99, "min_count": 25, "max_count": 40},
-            {"min": 2.00, "max": 6.99, "min_count": 22, "max_count": 37},
-            {"min": 7.00, "max": 9.99, "min_count": 0, "max_count": 8},
-            {"min": 10.00, "max": 29.99, "min_count": 0, "max_count": 4},
+            {"min": 1.00, "max": 1.99, "min_count": 25, "max_count": 45},
+            {"min": 2.00, "max": 6.99, "min_count": 22, "max_count": 45},
+            {"min": 7.00, "max": 9.99, "min_count": 0, "max_count": 4},
+            {"min": 10.00, "max": 29.99, "min_count": 0, "max_count": 3},
             {"min": 30.00, "max": 49.99, "min_count": 0, "max_count": 3},
             {"min": 50.00, "max": 99.99, "min_count": 0, "max_count": 3},
             {"min": 100.00, "max": 999.99, "min_count": 0, "max_count": 3},
@@ -1087,6 +1077,7 @@ class MainWindow(QMainWindow):
             money1 = f"{dev_total_balance:,.2f}"
             dev_total_balance_old = new_amount + real_time_amount
             money2 = f"{dev_total_balance_old:,.2f}"
+            # self.developers_wallet_button.setText(f"{dev_total_balance:,.2f}")
             self.developers_wallet_button.setText(money1) if condition <= 1 else self.developers_wallet_button.setText(
                 money2)
 
@@ -1114,14 +1105,53 @@ class MainWindow(QMainWindow):
             self.pause2()
 
     def natural_liquidation(self):
+        dd = float(self.total_amount_button.text().replace(",", "").strip() or 0)
+        deduct = float(self.amount_cashed_out_button.text().replace(",", "").strip() or 0)
+        init = float(self.developers_wallet_button.text().replace(",", "").strip() or 0)
+        addition = dd + init
+        add = init + (dd - deduct)
         try:
             prize_value = float(self.prize_button.text().strip() or 0)
             all_cards = int(self.all_matched_button.text().strip() or 0)
-            if (prize_value <= -5000 and all_cards <= 2) or (prize_value <= -18000 and all_cards <= 10):
+            if (prize_value <= -1000 and all_cards <= 2) or (prize_value <= -1800 and all_cards <= 10):
+                ee = int(self.total_users_button.text().replace(",", "").strip() or 0)
+                eee = int(self.users_remaining_button.text().replace(",", "").strip() or 0)
                 self.trigger_liquidation()
+                if eee == 0:
+                    print(f"😶 All {ee} users liquidated 💀💀")
+                if eee != 0:
+                    print(f"😶 Remaining {eee} users liquidated 💀💀")
+                self.developers_wallet_button.setText(
+                    f"{addition:,.2f}") if deduct == 0 else self.developers_wallet_button.setText(f"{add:,.2f}")
 
         except ValueError as e:
             print(e)
+
+    def amount_display(self):
+        try:
+            total_amount = float(self.total_amount_button.text().replace(",", "").strip() or 0)
+            total_users = int(self.total_users_button.text().replace(",", "").strip() or 0)
+            users_remaining = int(self.users_remaining_button.text().replace(",", "").strip() or 0)
+            prize_value = float(self.prize_button.text().strip() or 0)
+
+            # Avoid division errors
+            if total_users == 0:
+                return
+
+            # Amount per user
+            amount_per_user = total_amount / total_users
+
+            # Users who have cashed out so far
+            users_cashed_so_far = total_users - users_remaining
+
+            # New total cashed = users_cashed * amount_per_user
+            new_total_cashed = users_cashed_so_far * amount_per_user
+
+            if prize_value > 1:
+                self.amount_cashed_out_button.setText(f"{new_total_cashed:,.0f}")
+
+        except Exception as e:
+            print("Status layout error:", e)
 
     def users(self):
         try:
@@ -1241,6 +1271,7 @@ class MainWindow(QMainWindow):
         try:
             text = self.prize_button.text().replace("+", "").replace("++", "").strip()
             xx = float(text)
+
             if xx < 0:
                 color = "red"
             elif xx == 0:
@@ -1268,8 +1299,8 @@ class MainWindow(QMainWindow):
             for x in range(1):
                 file_content = self.users_remaining_button.text().strip()
                 file.write(f"{file_content}\n")
-        print(f"File '{file_path}' has been created and\ncontent appended"
-              f" successfully😎.\nOpen IDE side bar to view.")
+            print(f"File '{file_path}' has been created and\ncontent appended"
+                  f" successfully😎.\nOpen IDE side bar to view.")
 
     def reset(self):
         self.instruction_label.hide()
@@ -1304,6 +1335,7 @@ class MainWindow(QMainWindow):
             self.prize_button.setStyleSheet("color: black;"
                                             "background-color: white;"
                                             "font-size: 22px;")
+            self.rating_button.setText("")
 
             # ✅ CARD BUTTONS RESET
             for btn in [self.button1, self.button2, self.button3, self.button4, self.button5, self.button6]:
@@ -1324,6 +1356,7 @@ class MainWindow(QMainWindow):
                                              "font-size: 25px;")
         self.users()
         self.prize_determinant()
+        self.amount_display()
         self.save_file()
         self.set_flexes()
         QTimer.singleShot(4500, lambda: (

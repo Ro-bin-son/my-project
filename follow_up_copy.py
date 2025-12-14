@@ -15,6 +15,7 @@ from PyQt5.QtGui import QFontDatabase, QFont
 from PyQt5.QtWidgets import QLineEdit, QMainWindow, QApplication, QPushButton, QLabel, QVBoxLayout
 import animation
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -48,19 +49,10 @@ class MainWindow(QMainWindow):
         self.amount_cashed_out_button = QPushButton(self)
         self.users_remaining_button = QPushButton(self)
         self.users_remaining_label = QLabel(self)
-        self.sign_up_label = QLabel(self)
-        self.sign_up_button = QPushButton(self)
         self.multiplier_label = QLabel(self)
-        self.error_label = QLabel(self)
         self.check1 = QCheckBox(self)
         self.check2 = QCheckBox(self)
         self.check3 = QCheckBox(self)
-        self.line1 = QLineEdit(self)
-        self.line2 = QLineEdit(self)
-        self.line3 = QLineEdit(self)
-        self.line4 = QLineEdit(self)
-        self.line5 = QLineEdit(self)
-        self.line6 = QLineEdit(self)
 
         self.flex1 = QPushButton(self)
         self.flex2 = QPushButton(self)
@@ -126,11 +118,11 @@ class MainWindow(QMainWindow):
         self.flex62 = QPushButton(self)
         self.flex63 = QPushButton(self)
         self.flex64 = QPushButton(self)
-        self.flexes = [self.flex1,self.flex2,self.flex3,self.flex4,self.flex5,self.flex6,self.flex7,
-                       self.flex8,self.flex9,self.flex10,self.flex11,self.flex12,self.flex13,self.flex14,
-                       self.flex15,self.flex16,self.flex17,self.flex18,self.flex19,self.flex20,self.flex21,
-                       self.flex22,self.flex23,self.flex24,self.flex25,self.flex26,self.flex27,self.flex28,
-                       self.flex29,self.flex30,self.flex31,self.flex32, self.flex33, self.flex34, self.flex35,
+        self.flexes = [self.flex1, self.flex2, self.flex3, self.flex4, self.flex5, self.flex6, self.flex7,
+                       self.flex8, self.flex9, self.flex10, self.flex11, self.flex12, self.flex13, self.flex14,
+                       self.flex15, self.flex16, self.flex17, self.flex18, self.flex19, self.flex20, self.flex21,
+                       self.flex22, self.flex23, self.flex24, self.flex25, self.flex26, self.flex27, self.flex28,
+                       self.flex29, self.flex30, self.flex31, self.flex32, self.flex33, self.flex34, self.flex35,
                        self.flex36, self.flex37, self.flex38, self.flex39, self.flex40, self.flex41, self.flex42,
                        self.flex43, self.flex44, self.flex45, self.flex46, self.flex47, self.flex48, self.flex49,
                        self.flex50, self.flex51, self.flex52, self.flex53, self.flex54, self.flex55, self.flex56,
@@ -164,15 +156,10 @@ class MainWindow(QMainWindow):
         self.automation_timer.timeout.connect(self.prize_determinant)
         self.initUI()
 
-
     def initUI(self):
         for flex in self.flexes:
             flex.hide()
-        lines = [self.line1, self.line2, self.line3, self.line4, self.line5, self.line6]
-        for line in lines:
-            line.hide()
-        self.error_label.hide()
-        self.multiplier_label.hide()
+            self.multiplier_label.hide()
         self.total_users_button.hide()
         self.total_users_label.hide()
         self.total_amount_button.hide()
@@ -205,33 +192,55 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("HIGH SPEED SIMULATION SOFTWARE💀💀")
         self.label.setGeometry(115, 10, 500, 55)
         self.instruction_label.setGeometry(215, 10, 500, 55)
-        self.creator_label.setGeometry(485, 790, 500, 55)
+        self.creator_label.setGeometry(450, 790, 500, 55)
         self.proceed_button.setGeometry(130, 450, 130, 50)
         self.cancel_button.setGeometry(410, 450, 130, 50)
         self.intro_label.setGeometry(40, 40, 800, 300)
-        self.flex1.setGeometry(40, 365, 70, 27), self.flex2.setGeometry(113, 365, 70, 27), self.flex3.setGeometry(188, 365, 70, 27)
-        self.flex4.setGeometry(263, 365, 70, 27), self.flex5.setGeometry(338, 365, 70, 27),self.flex6.setGeometry(413, 365, 70, 27)
-        self.flex7.setGeometry(488, 365, 70, 27),self.flex8.setGeometry(563, 365, 70, 27)
-        self.flex9.setGeometry(40, 395, 70, 27), self.flex10.setGeometry(113, 395, 70, 27), self.flex11.setGeometry(188, 395, 70, 27)
-        self.flex12.setGeometry(263, 395, 70, 27), self.flex13.setGeometry(338, 395, 70, 27), self.flex14.setGeometry(413, 395, 70, 27)
+        self.flex1.setGeometry(40, 365, 70, 27), self.flex2.setGeometry(113, 365, 70, 27), self.flex3.setGeometry(188,
+                                                                                                                  365,
+                                                                                                                  70,
+                                                                                                                  27)
+        self.flex4.setGeometry(263, 365, 70, 27), self.flex5.setGeometry(338, 365, 70, 27), self.flex6.setGeometry(413,
+                                                                                                                   365,
+                                                                                                                   70,
+                                                                                                                   27)
+        self.flex7.setGeometry(488, 365, 70, 27), self.flex8.setGeometry(563, 365, 70, 27)
+        self.flex9.setGeometry(40, 395, 70, 27), self.flex10.setGeometry(113, 395, 70, 27), self.flex11.setGeometry(188,
+                                                                                                                    395,
+                                                                                                                    70,
+                                                                                                                    27)
+        self.flex12.setGeometry(263, 395, 70, 27), self.flex13.setGeometry(338, 395, 70, 27), self.flex14.setGeometry(
+            413, 395, 70, 27)
         self.flex15.setGeometry(488, 395, 70, 27), self.flex16.setGeometry(563, 395, 70, 27)
-        self.flex17.setGeometry(40, 425, 70, 27), self.flex18.setGeometry(113, 425, 70, 27), self.flex19.setGeometry(188, 425, 70, 27)
-        self.flex20.setGeometry(263, 425, 70, 27), self.flex21.setGeometry(338, 425, 70, 27), self.flex22.setGeometry(413, 425, 70, 27)
+        self.flex17.setGeometry(40, 425, 70, 27), self.flex18.setGeometry(113, 425, 70, 27), self.flex19.setGeometry(
+            188, 425, 70, 27)
+        self.flex20.setGeometry(263, 425, 70, 27), self.flex21.setGeometry(338, 425, 70, 27), self.flex22.setGeometry(
+            413, 425, 70, 27)
         self.flex23.setGeometry(488, 425, 70, 27), self.flex24.setGeometry(563, 425, 70, 27)
-        self.flex25.setGeometry(40, 455, 70, 27), self.flex26.setGeometry(113, 455, 70, 27), self.flex27.setGeometry(188, 455, 70, 27)
-        self.flex28.setGeometry(263, 455, 70, 27), self.flex29.setGeometry(338, 455, 70, 27), self.flex30.setGeometry(413, 455, 70, 27)
+        self.flex25.setGeometry(40, 455, 70, 27), self.flex26.setGeometry(113, 455, 70, 27), self.flex27.setGeometry(
+            188, 455, 70, 27)
+        self.flex28.setGeometry(263, 455, 70, 27), self.flex29.setGeometry(338, 455, 70, 27), self.flex30.setGeometry(
+            413, 455, 70, 27)
         self.flex31.setGeometry(488, 455, 70, 27), self.flex32.setGeometry(563, 455, 70, 27)
-        self.flex33.setGeometry(40, 485, 70, 27), self.flex34.setGeometry(113, 485, 70, 27), self.flex35.setGeometry(188, 485, 70, 27)
-        self.flex36.setGeometry(263, 485, 70, 27), self.flex37.setGeometry(338, 485, 70, 27), self.flex38.setGeometry(413, 485, 70, 27)
+        self.flex33.setGeometry(40, 485, 70, 27), self.flex34.setGeometry(113, 485, 70, 27), self.flex35.setGeometry(
+            188, 485, 70, 27)
+        self.flex36.setGeometry(263, 485, 70, 27), self.flex37.setGeometry(338, 485, 70, 27), self.flex38.setGeometry(
+            413, 485, 70, 27)
         self.flex39.setGeometry(488, 485, 70, 27), self.flex40.setGeometry(563, 485, 70, 27)
-        self.flex41.setGeometry(40, 515, 70, 27), self.flex42.setGeometry(113, 515, 70, 27), self.flex43.setGeometry(188, 515, 70, 27)
-        self.flex44.setGeometry(263, 515, 70, 27), self.flex45.setGeometry(338, 515, 70, 27), self.flex46.setGeometry(413, 515, 70, 27)
+        self.flex41.setGeometry(40, 515, 70, 27), self.flex42.setGeometry(113, 515, 70, 27), self.flex43.setGeometry(
+            188, 515, 70, 27)
+        self.flex44.setGeometry(263, 515, 70, 27), self.flex45.setGeometry(338, 515, 70, 27), self.flex46.setGeometry(
+            413, 515, 70, 27)
         self.flex47.setGeometry(488, 515, 70, 27), self.flex48.setGeometry(563, 515, 70, 27)
-        self.flex49.setGeometry(40, 545, 70, 27), self.flex50.setGeometry(113, 545, 70, 27), self.flex51.setGeometry(188, 545, 70, 27)
-        self.flex52.setGeometry(263, 545, 70, 27), self.flex53.setGeometry(338, 545, 70, 27), self.flex54.setGeometry(413, 545, 70, 27)
+        self.flex49.setGeometry(40, 545, 70, 27), self.flex50.setGeometry(113, 545, 70, 27), self.flex51.setGeometry(
+            188, 545, 70, 27)
+        self.flex52.setGeometry(263, 545, 70, 27), self.flex53.setGeometry(338, 545, 70, 27), self.flex54.setGeometry(
+            413, 545, 70, 27)
         self.flex55.setGeometry(488, 545, 70, 27), self.flex56.setGeometry(563, 545, 70, 27)
-        self.flex57.setGeometry(40, 575, 70, 27), self.flex58.setGeometry(113, 575, 70, 27), self.flex59.setGeometry(188, 575, 70, 27)
-        self.flex60.setGeometry(263, 575, 70, 27), self.flex61.setGeometry(338, 575, 70, 27), self.flex62.setGeometry(413, 575, 70, 27)
+        self.flex57.setGeometry(40, 575, 70, 27), self.flex58.setGeometry(113, 575, 70, 27), self.flex59.setGeometry(
+            188, 575, 70, 27)
+        self.flex60.setGeometry(263, 575, 70, 27), self.flex61.setGeometry(338, 575, 70, 27), self.flex62.setGeometry(
+            413, 575, 70, 27)
         self.flex63.setGeometry(488, 575, 70, 27), self.flex64.setGeometry(563, 575, 70, 27)
         for flex in self.flexes:
             flex.setStyleSheet("background-color: red;"
@@ -250,8 +259,7 @@ class MainWindow(QMainWindow):
         self.lineEdit.setPlaceholderText("Type your number here (1 - 100)")
         self.lineEdit.setStyleSheet(
             "font-size:16px;"  "background-color: grey;"   "border-radius: 1px;" "font-family:sans-serif;"
-            )
-
+        )
 
         self.record_button.setGeometry(275, 130, 110, 40)
         self.record_button.setObjectName("record_button")
@@ -263,7 +271,7 @@ class MainWindow(QMainWindow):
                                        QPushButton {
                                        font-size: 50px; font-family: arial; border: 2px solid; border-radius: 8px;
                                        }
-                                     
+
                                      QPushButton#record_button{
                                            background-color: hsl(180, 38%, 17%);  font-size: 16px; border-style: solid; border-radius: 10px;
                                            color: white;
@@ -274,7 +282,6 @@ class MainWindow(QMainWindow):
                                            }                    
                                      }
                                        """)
-
 
         # connect main navigation safely (disconnect first)
         try:
@@ -329,6 +336,7 @@ class MainWindow(QMainWindow):
         for field in credentials:
             field.show()
 
+        self.credentials_label.setText("Sign in:")
         self.credentials_label.setStyleSheet("font-size: 24px;"
                                              "color: grey;")
 
@@ -344,14 +352,6 @@ class MainWindow(QMainWindow):
 
         self.allow_button.setText("Sign in")
         self.home_layout_label.setText("Sign in to your account\n to continue.")
-        self.sign_up_label.setText("Don't have an account?")
-        self.sign_up_button.setText("Sign up")
-        self.sign_up_button.setStyleSheet("font-size: 22px;"
-                                        "color: white;"
-                                        "background-color: #008fcc;")
-        self.sign_up_label.setStyleSheet("font-size: 22px;"
-                                          "color: white;"
-                                          )
 
         self.allow_button.setStyleSheet("font-size: 22px;"
                                         "color: white;"
@@ -362,23 +362,21 @@ class MainWindow(QMainWindow):
         self.line_edit2_label.setStyleSheet("font-size: 17px;"
                                             "color: white;")
         self.home_layout_label.setGeometry(150, 20, 800, 80)
+        self.home_layout_label.setText("Sign in to your account\n to continue.")
         self.home_layout_label.setStyleSheet("font-size: 35px;" "color: grey;")
         self.sign_in_layout_button.setStyleSheet("font-size: 25px;"
                                                  "Background-color: #008fcc;"
                                                  "color: white")
-
         self.sign_out_layout_button.setStyleSheet("font-size: 25px;"
                                                   "Background-color: grey;"
                                                   "color: white")
         self.sign_out_layout_button.setText("Cancel")
 
-        self.sign_up_label.setGeometry(140, 490, 500, 50)
-        self.sign_out_layout_button.setGeometry(380, 400, 120, 50)
-        self.sign_up_button.setGeometry(380, 490, 120, 50)
-        self.allow_button.setGeometry(160, 400, 120, 50)
-
+        self.credentials_label.setGeometry(280, 120, 400, 40)
+        self.sign_out_layout_button.setGeometry(380, 450, 120, 50)
         self.line_edit1.setGeometry(140, 200, 400, 40)
         self.line_edit2.setGeometry(140, 300, 400, 40)
+        self.allow_button.setGeometry(160, 450, 120, 50)
         self.line_edit1_label.setGeometry(140, 170, 150, 30)
         self.line_edit2_label.setGeometry(140, 270, 150, 30)
         try:
@@ -391,53 +389,18 @@ class MainWindow(QMainWindow):
         except Exception:
             pass
         self.sign_out_layout_button.clicked.connect(self.exit_game2)
-        try:
-            self.sign_up_button.clicked.disconnect()
-        except Exception:
-            pass
-        self.sign_up_button.clicked.connect(self.new_account)
-
-    def new_account(self):
-        lines = [self.line1, self.line2, self.line3, self.line4, self.line5, self.line6]
-        for line in lines:
-            line.show()
-        self.sign_up_button.setGeometry(265, 580, 120, 50)
-        self.sign_up_button.setText("Create")
-        self.home_layout_label.setGeometry(120, 10, 600, 70)
-        self.home_layout_label.setStyleSheet("color: grey;"
-                                             "font-size: 35px;")
-        self.line1.setGeometry(170, 110, 300, 30)
-        self.line2.setGeometry(170, 185, 300, 30)
-        self.line3.setGeometry(170, 260, 300, 30)
-        self.line4.setGeometry(170, 335, 300, 30)
-        self.line5.setGeometry(170, 410, 300, 30)
-        self.line6.setGeometry(170, 485, 300, 30)
-
-        self.sign_up_label.hide()
-        self.home_layout_label.setText("Sign up to create new account. ")
-        self.sign_in_layout_button.hide()
-        self.sign_out_layout_button.hide()
-        self.automatic_button.hide()
-        self.confirm_button.hide()
-        self.no_button.hide()
-        self.line_edit1.hide()
-        self.line_edit2.hide()
-        self.allow_button.hide()
-        self.credentials_label.hide()
-        self.line_edit1_label.hide()
-        self.line_edit2_label.hide()
-
 
     def verifier(self):
-        username = self.line_edit1.text().strip()
-        passkey = self.line_edit2.text().strip()
+        name = self.line_edit1.text().strip()
+        password = self.line_edit2.text().strip()
         # List of fields and their labels
         fields = [
-            (self.line_edit1, self.line_edit1_label, username, "Username is required"),
-            (self.line_edit2, self.line_edit2_label, passkey, "Passkey is required"),
+            (self.line_edit1, self.line_edit1_label, name, "Name is required"),
+            (self.line_edit2, self.line_edit2_label, password, "Password is required"),
         ]
         # Track if everything is valid
         all_valid = True
+
         for field, label, value, message in fields:
             if value == "":
                 label.setStyleSheet("color: red;")
@@ -448,52 +411,42 @@ class MainWindow(QMainWindow):
                 pass
 
         if all_valid:
-            self.read_credentials()
+            self.store_credentials_safely()
 
-    def read_credentials(self):
-        passkey = self.line_edit2.text().strip()
+    def store_credentials_safely(self):
+        try:
+            import json
+            file_path = "Credentials.json"
+            with open(file_path, "w") as file:
+                file_content1 = self.line_edit1.text().strip().capitalize()
+                file_content2 = self.line_edit2.text().strip()
+                format = {"Name": f"{file_content1}",
+                          "Password": f"{file_content2}"}
+                json.dump(format, file, indent=4)
+                print(f"json file '{file_path}' has been created and\ncontent appended"
+                      f" successfully😎.\nCheck IDE side bar to view.")
+
+        except FileExistsError:
+            print("That file exists already ")
+        self.read_credential()
+
+    def read_credential(self):
         import json
         file_path = "Cred.json"
         with open(file_path, "r") as file:
             data = json.load(file)
             customers = data.get("GetAllCustomers", {})
-            username = self.line_edit1.text().strip().capitalize()
-            valid = False
-            for cust_id, info in customers.items():
-                fname = info.get("FirstName", "")
-                if  username == fname and passkey == cust_id:
-                    valid = True
-                    break
-            if valid:
-                self.error_label.hide()
-                self.verifying_sign()
+            customer_id = "10168"
+            first_name = customers[customer_id].get("FirstName")
+            if customer_id in customers:
+                print(first_name)
             else:
-                self.error_label.show()
-                self.error_label.setGeometry(220, 130, 400, 40)
-                self.error_label.setStyleSheet("color: red;"
-                                               "font-size: 18px;")
-                self.error_label.setText("Invalid username or password.")
+                print("Customer ID not found💀💀")
+
+        self.verifying_sign()
 
     def verifying_sign(self):
-        self.sign_up_button.hide()
-        self.sign_up_label.hide()
-        self.home_layout_label.setGeometry(220, 240, 400, 40)
-        self.home_layout_label.setStyleSheet("color: orange;"
-                                       "font-size: 30px;")
-
-        self.home_layout_label.setText("Please wait...")
-        self.sign_in_layout_button.hide()
-        self.sign_out_layout_button.hide()
-        self.automatic_button.hide()
-        self.confirm_button.hide()
-        self.no_button.hide()
-        self.line_edit1.hide()
-        self.line_edit2.hide()
-        self.allow_button.hide()
-        self.credentials_label.hide()
-        self.line_edit1_label.hide()
-        self.line_edit2_label.hide()
-        QTimer.singleShot(500, self.intro)
+        QTimer.singleShot(700, self.intro)
 
     def intro(self):
         self.home_layout_label.hide()
@@ -528,7 +481,6 @@ class MainWindow(QMainWindow):
         except:
             pass
         self.allow_button.clicked.connect(self.safe_instructions)
-
 
     def shaking(self, widget):
         ### 1️⃣ SHAKE EFFECT
@@ -593,7 +545,6 @@ class MainWindow(QMainWindow):
             pass
         self.cancel_button.clicked.connect(self.cancel_stage)
 
-
     def arranging_mechanics(self):
         try:
             self.automatic_button.clicked.disconnect()
@@ -638,7 +589,6 @@ class MainWindow(QMainWindow):
             pass
         QTimer.singleShot(3500, self.automatic_mode_layout)
 
-
     def automatic_mode_layout(self):
         try:
             self.record_button.clicked.disconnect()
@@ -671,7 +621,7 @@ class MainWindow(QMainWindow):
         self.total_amount_label.setText("F-payout(Ksh):")
         self.total_users_label.setText("Contact:")
         self.users_remaining_label.setText("Disjoint:")
-        self.amount_cashed_out_label.setText("Cases A/B:")
+        self.amount_cashed_out_label.setText("Cases A/B/C:")
 
         self.intro_label.hide()
         self.total_users_label.setGeometry(470, 80, 150, 30)
@@ -756,7 +706,7 @@ class MainWindow(QMainWindow):
         self.instruction_label.setGeometry(200, 20, 700, 40)
         self.instruction_label.setStyleSheet("font-size: 24px;"
                                              "color: orange;")
-        QTimer.singleShot(2500,self.start_automatic_prep)
+        QTimer.singleShot(2500, self.start_automatic_prep)
         try:
             self.record_button.clicked.disconnect()
         except:
@@ -797,7 +747,6 @@ class MainWindow(QMainWindow):
         self.instruction_label.setText("In session 🚀")
         self.automation_timer.start()
 
-
     def get_multipliers(self, total=64):
         # Each range has min, max, and possible count (min_count, max_count)
         range_limits = [
@@ -831,7 +780,6 @@ class MainWindow(QMainWindow):
                 current_total -= 1
         return counts
 
-
     def read_all_flex_multipliers(self):
         multipliers = []
         for flex in self.flexes:
@@ -842,170 +790,156 @@ class MainWindow(QMainWindow):
                 multipliers.append(0.0)
         return multipliers
 
-    def perform_case_A(self):
-        multipliers = self.read_all_flex_multipliers()
-        total = 0
-        seven_counter = 0
-        mode = "seven"  # 70-tap mode
-        first_seven_index = None
+    def process_caseA(self):
+        pass
 
+    def process_caseB(self):
+        pass
+
+    def process_caseC(self):
+        pass
+
+    def process_case_a(self):
+        multipliers = self.read_all_flex_multipliers()
+        # 1. find M1
+        M1_index = None
         for i, m in enumerate(multipliers):
-            if mode == "seven":
-                if m >= 7 and m < 30:
-                    total += 70
-                    seven_counter += 1
-                    if seven_counter == 1:
-                        first_seven_index = i  # mark the first tapped seven
-                elif m > 30:
-                    total += 70  # first >30x tapped as 70
-                    mode = "thirty"
-            elif mode == "thirty":
-                if m > 30:
+            if m >= 7:
+                M1_index = i
+                break
+
+        if M1_index is None:
+            total = 0
+            self.amount_cashed_out_button.setText(str(total))
+            return total
+
+        # 2. ensure ALL before M1 are <7
+        if any(m >= 7 for m in multipliers[:M1_index]):
+            total = 0
+            self.amount_cashed_out_button.setText(str(total))
+            return total
+
+        # 3. M1 tap → always 70
+        total = 70
+
+        # 4. find M2
+        M2_index = None
+        for j in range(M1_index + 1, len(multipliers)):
+            if multipliers[j] >= 7:
+                M2_index = j
+                break
+
+        if M2_index is None:
+            self.amount_cashed_out_button.setText(str(total))
+            return total
+
+        M2 = multipliers[M2_index]
+
+        # 5. Tap M2 at 7 → +70
+        total += 70
+
+        # 6. If M2 >= 30 → afterward tap only >=30 for +300
+        if M2 >= 30:
+            for m in multipliers[M2_index + 1:]:
+                if m >= 30:
                     total += 300
 
+            self.amount_cashed_out_button.setText(str(total))
+            return total
 
-            # After first two ≥7 tapped, continue scanning
-            if seven_counter >= 2 and mode == "seven":
-                continue
+        # 7. If 7 ≤ M2 < 30 → tap 7–29 until first 30
+        first_30_index = None
+        for k in range(M2_index + 1, len(multipliers)):
+            if multipliers[k] >= 30:
+                first_30_index = k
+                break
+            if 7 <= multipliers[k] < 30:
+                total += 70
+
+        # No ≥30 found after M2
+        if first_30_index is None:
+            self.amount_cashed_out_button.setText(str(total))
+            return total
+
+        # 8. After reaching first ≥30, tap all ≥30 for +300
+        for m in multipliers[first_30_index:]:
+            if m >= 30:
+                total += 300
+
+        # Final output
         self.amount_cashed_out_button.setText(str(total))
         return total
 
-
-    def perform_case_B(self):
+    def perform_null_phase(self):
         multipliers = self.read_all_flex_multipliers()
+        for m in multipliers:
+            if m >= 30.0:
+                self.amount_cashed_out_button.setText("0")
+                return None
+
         total = 0
-
-        first = None
-        second = None
-        first_index = None
-        second_index = None
-
-        # find first multiplier ≥ 7
-        for i, m in enumerate(multipliers):
-            if m >= 7:
-                first = m
-                first_index = i
-                break
-
-        # condition: first must be >30
-        if first is None or first <= 30:
-            return 0
-
-        # tap first at 7x
-        total += 70
-
-        # find second multiplier ≥ 7 (after first)
-        for i in range(first_index + 1, len(multipliers)):
-            if multipliers[i] >= 7:
-                second = multipliers[i]
-                second_index = i
-                break
-
-        # tap second at 7x (both rule1 and rule2)
-        if second is not None:
-            total += 70
-            start_index = second_index + 1
-        else:
-            start_index = first_index + 1
-
-        # after second: tap only >30x
-        for m in multipliers[start_index:]:
-            if m > 30:
-                total += 300
-
-        self.amount_cashed_out_button.setText(str(total))
+        for m in multipliers:
+            if 7.0 <= m < 30.0:
+                total += 10
         return total
 
     def perform_contact(self):
         multipliers = self.read_all_flex_multipliers()
-        final = self.contact_penalty()
-        self.contact_count = 0  # reset count for this run
         for i in range(len(multipliers) - 1):
             A = multipliers[i]
             B = multipliers[i + 1]
-
             if A >= 10 and B > 30:
                 self.contact_count += 1
-        payout = (self.contact_count * 300) - final
-        self.total_users_button.setText(str(payout))
+                pp = self.contact_count * 300
+                payout = pp
+                self.total_users_button.setText(str(payout))
 
     def contact_penalty(self):
-        multipliers = self.read_all_flex_multipliers()
-        charges = 0
-        for i in range(len(multipliers) - 1):
-            A = multipliers[i]
-            if A >= 10:
-                charges += 1
-        final = charges * 10
-        return final
-
-    def perform_disjoint(self):
-        final = self.disjoint_penalty()
-        multipliers = self.read_all_flex_multipliers()
-        payout = 0
-        for i in range(len(multipliers) - 2):
-            A = multipliers[i]
-            B = multipliers[i+1]
-            C = multipliers[i+2]
-            if A >= 10 > B and C > 30:
-                self.disjoint_count += 1
-                payout = (self.disjoint_count * 300) - final
-        # Update GUI only ONCE after processing all
-        self.users_remaining_button.setText(str(payout - final if payout else 0 - final))
+        pass
 
     def disjoint_penalty(self):
+        pass
+
+    def perform_disjoint(self):
         multipliers = self.read_all_flex_multipliers()
-        charges = 0
         for i in range(len(multipliers) - 2):
             A = multipliers[i]
             B = multipliers[i + 1]
-            if A >= 10 and B < 10:
-                charges += 1
-        final = charges * 10
-        return final
+            C = multipliers[i + 2]
+            if A >= 10 > B and C > 30:
+                self.disjoint_count += 1
+                pp = self.disjoint_count * 300
+                payout = pp
+                self.users_remaining_button.setText(str(payout))
 
     def calculate_penalty_and_payout(self):
         multipliers = self.read_all_flex_multipliers()
-
-        cost = 0
+        penalty = 0
         safety_started = False
-        exit_multiplier = None
+        last_charged_multiplier = None
 
         for i, m in enumerate(multipliers):
-
             if not safety_started and m > 30:
                 if all(prev < 7 for prev in multipliers[:i]):
                     safety_started = True
                     continue
 
             if safety_started:
-                cost += 10
+                penalty += 10
+                last_charged_multiplier = m
 
                 if m >= 7:
-                    exit_multiplier = m
                     safety_started = False
                     break
 
-        # Case 1: safety never started
-        if not safety_started and exit_multiplier is None:
-            self.total_amount_button.setText("0")
-            return 0
+        if safety_started:
+            return penalty
 
-        # Case 2: safety started but never exited → pure loss
-        if safety_started and exit_multiplier is None:
-            result = -cost
-            self.total_amount_button.setText(str(result))
-            return result
-
-        # Case 3: safety exited normally
-        if exit_multiplier > 30:
-            result = 300 - cost
-        else:
-            result = 70 - cost
-        return result
-
+        penalty = (300 - penalty) if last_charged_multiplier and last_charged_multiplier > 30 else 0
+        return penalty
 
     def final_payout(self):
+        # total = self.perform_null_phase()
         penalty = self.calculate_penalty_and_payout()
         try:
             value1 = float(self.total_users_button.text().strip() or 0)
@@ -1022,11 +956,11 @@ class MainWindow(QMainWindow):
         except ValueError:
             value3 = 0
 
-        tally1 = (value3 + (value1 + value2))
-        tally3 = (tally1 + penalty)
-        tally4 = tally3 - self.constant_output
-        final_tally = f"{tally4:,.2f}"
-        self.total_amount_button.setText(final_tally)
+        raw_values = (value1 + value2 + value3)
+        step_2 = penalty + raw_values
+        step_3 = step_2 - self.constant_output
+        append_amount = f"{step_3:,.2f}"
+        self.total_amount_button.setText(append_amount)
 
     def generate_all_values(self):
         range_limits = [
@@ -1042,21 +976,17 @@ class MainWindow(QMainWindow):
         counts = self.get_multipliers()
         all_values = []
         for r, count in zip(range_limits, counts):
-                for _ in range(count):
-                    value = random.uniform(r["min"], r["max"])
-                    all_values.append(f"{value:.2f}x")
+            for _ in range(count):
+                value = random.uniform(r["min"], r["max"])
+                all_values.append(f"{value:.2f}x")
         random.shuffle(all_values)
         return all_values
-
-
 
     def set_flexes(self):
         all_values = self.generate_all_values()
         for i in range(64):
             flex = self.flexes[i]
             flex.setText(all_values[i])
-
-
 
     def final_wallet_update(self):
         try:
@@ -1068,15 +998,6 @@ class MainWindow(QMainWindow):
             self.developers_wallet_button.setText(append_amount)
         except Exception as e:
             print("final_wallet_update error:", e)
-
-    def write_total_to_file(self):
-        value = self.total_amount_button.text().strip()
-        file_path = "data.txt"
-        try:
-            with open(file_path, "a") as file:
-                file.write(value + "\n")
-        except Exception as e:
-            print("File write error:", e)
 
     def prize_layout_display(self):
         try:
@@ -1096,10 +1017,10 @@ class MainWindow(QMainWindow):
                                             )
 
             self.rating_button.setStyleSheet(f"background-color: white;"
-                                            f"font-size: 22px;"
-                                            f"color: {color};"
-                                            f"border-radius: 10px;"
-                                            )
+                                             f"font-size: 22px;"
+                                             f"color: {color};"
+                                             f"border-radius: 10px;"
+                                             )
         except:
             pass
 
@@ -1168,15 +1089,13 @@ class MainWindow(QMainWindow):
                                              "font-size: 25px;")
 
         self.multiplier_label.setStyleSheet("color: red;"
-                                             "font-size: 45px;")
+                                            "font-size: 45px;")
         self.set_flexes()
-        self.perform_case_A()
-        self.perform_case_B()
+        self.process_case_a()
         self.perform_contact()
         self.perform_disjoint()
         self.final_payout()
         self.final_wallet_update()
-        self.write_total_to_file()
 
         QTimer.singleShot(2500, lambda: (
             self.reset()
@@ -1186,7 +1105,7 @@ class MainWindow(QMainWindow):
         self.multiplier_label.hide()
         self.instruction_label.setGeometry(230, 100, 700, 50)
         self.instruction_label.setStyleSheet("font-size: 24px;"
-                                                 "color: orange;")
+                                             "color: orange;")
         self.instruction_label.setText("Session resetting...")
         self.prize_button.setText("")
         self.rating_button.setText("")
@@ -1195,11 +1114,9 @@ class MainWindow(QMainWindow):
         self.total_users_button.setText("")
         self.amount_cashed_out_button.setText("")
         self.prize_button.setStyleSheet("color: black;"
-                                            "background-color: white;"
-                                            )
+                                        "background-color: white;"
+                                        )
         QTimer.singleShot(2500, self.start_round)
-
-
 
     def start_round(self):
         # 1️⃣ Reset necessary round values
@@ -1223,13 +1140,11 @@ class MainWindow(QMainWindow):
         self.instruction_label.hide()
         self.record_button.hide()
 
-
     def show_staffs(self):
         self.lineEdit.show()
         self.label.show()
         self.instruction_label.show()
         self.record_button.show()
-
 
     def cancel_stage(self):
         try:
@@ -1255,7 +1170,6 @@ class MainWindow(QMainWindow):
                     border: 2px solid grey;
                 """)
         self.popup.show()
-
 
         # The question label
         self.popup_label = QLabel("So soon😲? Are you sure\n you want to exit app?", self.popup)
@@ -1306,7 +1220,6 @@ class MainWindow(QMainWindow):
         self.popup.hide()
         self.intro_label.setText("")
         QTimer.singleShot(100, self.close)  # close after 3 sec
-
 
     def exit_game(self):
         self.popup.hide()
