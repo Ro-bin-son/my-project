@@ -668,7 +668,7 @@ class MainWindow(QMainWindow):
         self.rating_label.setText("E/C:")
         self.developers_wallet_label.setText("Wallet Bal(Ksh):")
         self.developers_wallet_button.setText("12,500.00")
-        self.total_amount_label.setText("F-payout(Ksh):")
+        self.total_amount_label.setText("Payout(+/-)(Ksh):")
         self.total_users_label.setText("Contact:")
         self.users_remaining_label.setText("Disjoint:")
         self.amount_cashed_out_label.setText("Cases A/B:")
@@ -818,8 +818,10 @@ class MainWindow(QMainWindow):
         current_total = sum(counts)
         while current_total != total:
             diff = total - current_total
+
             # Randomly pick an index to increase or decrease
             idx = random.randint(0, len(counts) - 1)
+
             # Calculate allowable adjustment
             min_allowed = range_limits[idx]["min_count"]
             max_allowed = range_limits[idx]["max_count"]
@@ -1001,7 +1003,7 @@ class MainWindow(QMainWindow):
         if exit_multiplier > 30:
             result = 300 - cost
         else:
-            result = 70 - cost
+            result = -cost
         return result
 
 
@@ -1020,10 +1022,11 @@ class MainWindow(QMainWindow):
         try:
             value3 = float(self.amount_cashed_out_button.text().strip() or 0)
         except ValueError:
+
             value3 = 0
 
         tally1 = (value3 + (value1 + value2))
-        tally3 = (tally1 + penalty)
+        tally3 = tally1 + penalty
         tally4 = tally3 - self.constant_output
         final_tally = f"{tally4:,.2f}"
         self.total_amount_button.setText(final_tally)
@@ -1060,7 +1063,7 @@ class MainWindow(QMainWindow):
 
     def final_wallet_update(self):
         try:
-            real_time_amount = float(self.total_amount_button.text().replace(",", ""))
+            real_time_amount =float(self.total_amount_button.text().replace(",", "").strip() or 0)
             dev_wal = self.developers_wallet_button.text().replace(",", "").replace(",", "").strip()
             dev_wallet = float(dev_wal)
             dev_total_balance = real_time_amount + dev_wallet
@@ -1069,7 +1072,7 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print("final_wallet_update error:", e)
 
-    def write_total_to_file(self):
+    def write_payout_to_file(self):
         value = self.total_amount_button.text().strip()
         file_path = "data.txt"
         try:
@@ -1176,7 +1179,7 @@ class MainWindow(QMainWindow):
         self.perform_disjoint()
         self.final_payout()
         self.final_wallet_update()
-        self.write_total_to_file()
+        self.write_payout_to_file()
 
         QTimer.singleShot(2500, lambda: (
             self.reset()
